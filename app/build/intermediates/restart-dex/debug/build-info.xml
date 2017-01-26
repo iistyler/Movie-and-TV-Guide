@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="x86"
+    api-level="25"
+    density="xxhdpi"
+    format="8"
+    plugin-version="2.2.3"
+    timestamp="90685058641234"
+    token="-2074262240403920756"
+    verifier="FIELD_TYPE_CHANGE" >
+
+    <task
+        name="javac"
+        duration="5633" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="40" />
+    <task
+        name="verifier"
+        duration="19" />
+
+    <artifact
+        location="/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_7/classes.dex"
+        type="DEX" />
+    <artifact
+        location="/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_6/classes.dex"
+        type="DEX" />
+    <artifact
+        location="/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4/classes.dex"
+        type="DEX" />
+
+    <build
+        timestamp="90370590033777"
+        verifier="FULL_BUILD_REQUESTED" >
+        <artifact
+            location="/Users/Tyler/Downloads/MovieGuide-master/app/build/outputs/apk/app-debug.apk"
+            type="MAIN" />
+    </build>
+    <build
+        timestamp="90685058641234"
+        verifier="FIELD_TYPE_CHANGE" >
+        <artifact
+            location="/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_7/classes.dex"
+            type="DEX" />
+        <artifact
+            location="/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_6/classes.dex"
+            type="DEX" />
+        <artifact
+            location="/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/5/slice_4/classes.dex"
+            type="DEX" />
+    </build>
+
+</instant-run>
