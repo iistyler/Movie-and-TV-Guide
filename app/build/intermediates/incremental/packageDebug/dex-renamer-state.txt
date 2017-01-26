@@ -1,7 +1,0 @@
-#Wed Jan 25 19:20:16 EST 2017
-base.0=/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_2686db0ac96b56e8f8259c311f6a91d17946e09e
-renamed.1=classes2.dex
-renamed.0=classes.dex
-file.1=/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_383968dbe4fde5ad3438ff91e5f4803eadc5a468/classes.dex
-base.1=/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_383968dbe4fde5ad3438ff91e5f4803eadc5a468
-file.0=/Users/Tyler/Downloads/MovieGuide-master/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_2686db0ac96b56e8f8259c311f6a91d17946e09e/classes.dex
