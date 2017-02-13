@@ -2,7 +2,7 @@ package com.esoxjem.movieguide;
 
 import com.esoxjem.movieguide.details.DetailsComponent;
 import com.esoxjem.movieguide.details.DetailsModule;
-import com.esoxjem.movieguide.favorites.FavoritesModule;
+import com.esoxjem.movieguide.listing.favorites.FavoritesModule;
 import com.esoxjem.movieguide.listing.ListingComponent;
 import com.esoxjem.movieguide.listing.ListingModule;
 import com.esoxjem.movieguide.network.NetworkModule;

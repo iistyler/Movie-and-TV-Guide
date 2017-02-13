@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.esoxjem.movieguide.Api;
 import com.esoxjem.movieguide.Movie;
-import com.esoxjem.movieguide.favorites.FavoritesInteractor;
+import com.esoxjem.movieguide.listing.favorites.FavoritesInteractor;
 import com.esoxjem.movieguide.network.RequestGenerator;
 import com.esoxjem.movieguide.network.RequestHandler;
 import com.esoxjem.movieguide.listing.sorting.SortType;
