@@ -1,12 +1,14 @@
 package com.esoxjem.movieguide.details;
 
 import com.esoxjem.movieguide.Api;
+import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
 import com.esoxjem.movieguide.network.RequestGenerator;
 import com.esoxjem.movieguide.network.RequestHandler;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 import okhttp3.Request;
 import rx.Observable;
 import rx.functions.Func0;
+
+import static com.esoxjem.movieguide.listing.MoviesListingParser.getMovie;
 
 /**
  * @author arun
