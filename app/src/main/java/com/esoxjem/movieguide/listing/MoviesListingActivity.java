@@ -1,10 +1,19 @@
 package com.esoxjem.movieguide.listing;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.Constants;
@@ -16,6 +25,10 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 {
     public static final String DETAILS_FRAGMENT = "DetailsFragment";
     private boolean twoPaneMode;
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -23,6 +36,13 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setToolbar();
+
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        addDrawerItems();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         if (findViewById(R.id.movie_details_container) != null)
         {
@@ -40,10 +60,25 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         }
     }
 
+    private void addDrawerItems()
+    {
+        String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        mDrawerList.setAdapter(mAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MoviesListingActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void setToolbar()
     {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         if (getSupportActionBar() != null)
         {
@@ -51,6 +86,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
