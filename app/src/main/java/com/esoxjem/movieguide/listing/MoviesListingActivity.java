@@ -30,6 +30,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,6 +41,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         addDrawerItems();
+        setupDrawer();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -62,16 +64,34 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
     private void addDrawerItems()
     {
-        String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux" };
+        String[] osArray = { "Most Popular", "Highest Rated", "Favorites"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MoviesListingActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MoviesListingActivity.this, "Button Event", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.string.drawer_open, R.string.drawer_close) {
+
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
     }
 
     private void setToolbar()
@@ -85,6 +105,36 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
             getSupportActionBar().setTitle(R.string.movie_guide);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId())
+        {
+            case R.id.action_share:
+                Toast.makeText(MoviesListingActivity.this, "NFC Button Event", Toast.LENGTH_SHORT).show();
+                //Call required NFC Functions here.
+        }
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
