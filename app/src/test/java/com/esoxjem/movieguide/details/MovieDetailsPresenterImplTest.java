@@ -3,7 +3,7 @@ package com.esoxjem.movieguide.details;
 import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
-import com.esoxjem.movieguide.listing.favorites.FavoritesInteractor;
+import com.esoxjem.movieguide.listing.favorites.ListInteractor;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class MovieDetailsPresenterImplTest
     @Mock
     private MovieDetailsInteractor movieDetailsInteractor;
     @Mock
-    private FavoritesInteractor favoritesInteractor;
+    private ListInteractor listInteractor;
     @Mock
     Movie movie;
     @Mock
@@ -48,7 +48,7 @@ public class MovieDetailsPresenterImplTest
     public void setUp() throws Exception
     {
         MockitoAnnotations.initMocks(this);
-        movieDetailsPresenter = new MovieDetailsPresenterImpl(movieDetailsInteractor, favoritesInteractor);
+        movieDetailsPresenter = new MovieDetailsPresenterImpl(movieDetailsInteractor, listInteractor);
         movieDetailsPresenter.setView(view);
     }
 
@@ -62,7 +62,7 @@ public class MovieDetailsPresenterImplTest
     public void shouldUnfavoriteIfFavoriteTapped()
     {
         when(movie.getId()).thenReturn("12345");
-        when(favoritesInteractor.isFavorite(movie.getId())).thenReturn(true);
+        when(listInteractor.isFavorite(movie.getId())).thenReturn(true);
         movieDetailsPresenter.onFavoriteClick(movie);
         verify(view).showUnFavorited();
     }
@@ -71,7 +71,7 @@ public class MovieDetailsPresenterImplTest
     public void shouldFavoriteIfUnfavoriteTapped()
     {
         when(movie.getId()).thenReturn("12345");
-        when(favoritesInteractor.isFavorite(movie.getId())).thenReturn(false);
+        when(listInteractor.isFavorite(movie.getId())).thenReturn(false);
         movieDetailsPresenter.onFavoriteClick(movie);
         verify(view).showFavorited();
     }
