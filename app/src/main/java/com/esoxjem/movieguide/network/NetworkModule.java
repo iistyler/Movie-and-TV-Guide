@@ -21,7 +21,7 @@ public class NetworkModule
 
     @Provides
     @Singleton
-    OkHttpClient provideOkHttpClient()
+    public OkHttpClient provideOkHttpClient()
     {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -34,7 +34,7 @@ public class NetworkModule
 
     @Provides
     @Singleton
-    RequestHandler provideRequestHandler(OkHttpClient okHttpClient)
+    public RequestHandler provideRequestHandler(OkHttpClient okHttpClient)
     {
         return new RequestHandler(okHttpClient);
     }

@@ -1,3 +1,5 @@
+.DS_Store
+
 # Built application files
 *.apk
 *.ap_
@@ -38,6 +40,7 @@ captures/
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/libraries
+.idea/*
 
 # Keystore files
 *.jks
@@ -56,5 +59,3 @@ freeline_project_description.json
 
 # Generated Files
 app/build/
-
-\.idea/

@@ -1,4 +1,4 @@
-package com.esoxjem.movieguide.favorites;
+package com.esoxjem.movieguide.listing.favorites;
 
 import com.esoxjem.movieguide.AppModule;
 

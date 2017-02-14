@@ -3,7 +3,7 @@ package com.esoxjem.movieguide.details;
 import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
-import com.esoxjem.movieguide.favorites.FavoritesInteractor;
+import com.esoxjem.movieguide.listing.favorites.FavoritesInteractor;
 
 import org.junit.After;
 import org.junit.Before;
