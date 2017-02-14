@@ -1,6 +1,6 @@
 package com.esoxjem.movieguide.details;
 
-import com.esoxjem.movieguide.listing.favorites.FavoritesInteractor;
+import com.esoxjem.movieguide.listing.favorites.ListInteractor;
 import com.esoxjem.movieguide.network.RequestHandler;
 
 import dagger.Module;
@@ -23,8 +23,8 @@ public class DetailsModule
     @Provides
     @DetailsScope
     MovieDetailsPresenter providePresenter(MovieDetailsInteractor detailsInteractor,
-                                           FavoritesInteractor favoritesInteractor)
+                                           ListInteractor listInteractor)
     {
-        return new MovieDetailsPresenterImpl(detailsInteractor, favoritesInteractor);
+        return new MovieDetailsPresenterImpl(detailsInteractor, listInteractor);
     }
 }

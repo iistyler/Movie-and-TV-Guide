@@ -3,7 +3,7 @@ package com.esoxjem.movieguide.details;
 import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
-import com.esoxjem.movieguide.listing.favorites.FavoritesInteractor;
+import com.esoxjem.movieguide.listing.favorites.ListInteractor;
 import com.esoxjem.movieguide.util.RxUtils;
 
 import java.util.List;
@@ -20,14 +20,14 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
 {
     private MovieDetailsView view;
     private MovieDetailsInteractor movieDetailsInteractor;
-    private FavoritesInteractor favoritesInteractor;
+    private ListInteractor listInteractor;
     private Subscription trailersSubscription;
     private Subscription reviewSubscription;
 
-    MovieDetailsPresenterImpl(MovieDetailsInteractor movieDetailsInteractor, FavoritesInteractor favoritesInteractor)
+    MovieDetailsPresenterImpl(MovieDetailsInteractor movieDetailsInteractor, ListInteractor listInteractor)
     {
         this.movieDetailsInteractor = movieDetailsInteractor;
-        this.favoritesInteractor = favoritesInteractor;
+        this.listInteractor = listInteractor;
     }
 
     @Override
@@ -130,7 +130,7 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
     @Override
     public void showFavoriteButton(Movie movie)
     {
-        boolean isFavorite = favoritesInteractor.isFavorite(movie.getId());
+        boolean isFavorite = listInteractor.isOnList(movie.getId(), 0);
         if (isViewAttached())
         {
             if (isFavorite)
@@ -148,14 +148,14 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
     {
         if (isViewAttached())
         {
-            boolean isFavorite = favoritesInteractor.isFavorite(movie.getId());
+            boolean isFavorite = listInteractor.isOnList(movie.getId(), 0);
             if (isFavorite)
             {
-                favoritesInteractor.unFavorite(movie.getId());
+                listInteractor.removeFromList(movie.getId(), 0);
                 view.showUnFavorited();
             } else
             {
-                favoritesInteractor.setFavorite(movie);
+                listInteractor.addToList(movie, 0);
                 view.showFavorited();
             }
         }

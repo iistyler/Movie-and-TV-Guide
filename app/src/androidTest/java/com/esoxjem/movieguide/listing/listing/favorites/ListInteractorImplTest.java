@@ -2,8 +2,7 @@ package com.esoxjem.movieguide.listing.listing.favorites;
 
 import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.listing.favorites.DBClass;
-import com.esoxjem.movieguide.listing.favorites.FavoritesInteractorImpl;
-import com.esoxjem.movieguide.listing.favorites.GroupInteractorImpl;
+import com.esoxjem.movieguide.listing.favorites.ListInteractorImpl;
 
 import org.junit.Test;
 
@@ -14,7 +13,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-public class favouritesInteractorImplTest {
+public class ListInteractorImplTest {
 
     @Test
     public void setFavoriteTest() {
@@ -25,13 +24,13 @@ public class favouritesInteractorImplTest {
         // Create a movie object with the ID of Interstellar
         Movie movie = new Movie();
         movie.setId("157336");
-        FavoritesInteractorImpl favoritesInteractor = FavoritesInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         // Add to favourites
-        favoritesInteractor.setFavorite(movie);
+        listInteractor.addToList(movie, 0);
 
         // Check if it was favourited
-        List<Movie> newFavorites = favoritesInteractor.getFavorites();
+        List<Movie> newFavorites = listInteractor.getMoviesOnList(0);
         assertEquals("157336", newFavorites.get(0).getId());
     }
 
@@ -44,20 +43,20 @@ public class favouritesInteractorImplTest {
         // Create a movie object with the ID of Interstellar
         Movie movie = new Movie();
         movie.setId("157336");
-        FavoritesInteractorImpl favoritesInteractor = FavoritesInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         // Add to favourites
-        favoritesInteractor.setFavorite(movie);
-        List<Movie> newFavorites = favoritesInteractor.getFavorites();
+        listInteractor.addToList(movie, 0);
+        List<Movie> newFavorites = listInteractor.getMoviesOnList(0);
 
         // Check it was added
         assertEquals(newFavorites.size(), 1);
 
         // Remove from favourites
-        favoritesInteractor.unFavorite("157336");
+        listInteractor.removeFromList("157336", 0);
 
         // Check if it was un-favorited
-        newFavorites = favoritesInteractor.getFavorites();
+        newFavorites = listInteractor.getMoviesOnList(0);
         assertEquals(newFavorites.size(), 0);
     }
 
@@ -67,19 +66,19 @@ public class favouritesInteractorImplTest {
         movieDB.createDB();
         movieDB.resetDB();
 
-        FavoritesInteractorImpl favoritesInteractor = FavoritesInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         // Make sure its not currently a favorite
-        Boolean isFav = favoritesInteractor.isFavorite("157336");
+        Boolean isFav = listInteractor.isOnList("157336", 0);
         assertFalse(isFav);
 
         // Create a movie object with the ID of Interstellar
         Movie movie = new Movie();
         movie.setId("157336");
-        favoritesInteractor.setFavorite(movie);
+        listInteractor.addToList(movie, 0);
 
         // Make sure its not currently a favorite
-        isFav = favoritesInteractor.isFavorite("157336");
+        isFav = listInteractor.isOnList("157336", 0);
         assertTrue(isFav);
     }
 
@@ -89,11 +88,11 @@ public class favouritesInteractorImplTest {
         movieDB.createDB();
         movieDB.resetDB();
 
-        FavoritesInteractorImpl favoritesInteractor = FavoritesInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         // Create list
-        favoritesInteractor.createList("Group4", 2);
-        Map<Integer, String> lists = favoritesInteractor.getLists(2);
+        listInteractor.createList("Group4", 2);
+        Map<Integer, String> lists = listInteractor.getLists(2);
 
         // Check to see if list exists
         Integer firstKey = lists.keySet().iterator().next();
@@ -106,22 +105,22 @@ public class favouritesInteractorImplTest {
         movieDB.createDB();
         movieDB.resetDB();
 
-        FavoritesInteractorImpl favoritesInteractor = FavoritesInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         // Create some lists
-        favoritesInteractor.createList("List1", 1);
-        favoritesInteractor.createList("List2", 1);
-        favoritesInteractor.createList("List3", 1);
-        Map<Integer, String> lists = favoritesInteractor.getLists(1);
+        listInteractor.createList("List1", 1);
+        listInteractor.createList("List2", 1);
+        listInteractor.createList("List3", 1);
+        Map<Integer, String> lists = listInteractor.getLists(1);
 
         // Remove group
         for (Map.Entry<Integer, String> current : lists.entrySet()) {
             if (current.getValue().equals("List1") || current.getValue().equals("List3") )
-                favoritesInteractor.removeList(current.getKey());
+                listInteractor.removeList(current.getKey());
         }
 
         // Check list was updated
-        lists = favoritesInteractor.getLists(1);
+        lists = listInteractor.getLists(1);
         assertEquals("List2", lists.values().toArray()[0]);
     }
 
@@ -131,19 +130,19 @@ public class favouritesInteractorImplTest {
         movieDB.createDB();
         movieDB.resetDB();
 
-        FavoritesInteractorImpl favoritesInteractor = FavoritesInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         // Create first group
-        favoritesInteractor.createList("List4", 2);
-        Map<Integer, String> groups = favoritesInteractor.getLists(2);
+        listInteractor.createList("List4", 2);
+        Map<Integer, String> groups = listInteractor.getLists(2);
 
         // Update group
         Integer firstKey = groups.keySet().iterator().next();
-        favoritesInteractor.changeListName(firstKey, "List7");
+        listInteractor.changeListName(firstKey, "List7");
 
 
         // Check group was updated
-        groups = favoritesInteractor.getLists(2);
+        groups = listInteractor.getLists(2);
         assertEquals(groups.values().toArray()[0], "List7");
     }
 }

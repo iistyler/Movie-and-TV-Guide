@@ -27,13 +27,13 @@ import static com.esoxjem.movieguide.listing.MoviesListingParser.getMovie;
  * @author arun
  */
 @Singleton
-public class FavoritesStore
+public class ListStore
 {
     private RequestHandler requestHandler;
-    private static final String PREF_NAME = "FavoritesStore";
+    private static final String PREF_NAME = "ListStore";
 
     @Inject
-    public FavoritesStore()
+    public ListStore()
     {
         NetworkModule networkModule = new NetworkModule();
         requestHandler = networkModule.provideRequestHandler(networkModule.provideOkHttpClient());

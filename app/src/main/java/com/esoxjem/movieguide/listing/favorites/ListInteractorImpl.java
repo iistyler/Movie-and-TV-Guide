@@ -11,38 +11,38 @@ import java.util.Map;
 /**
  * @author arun
  */
-public class FavoritesInteractorImpl implements FavoritesInteractor
+public class ListInteractorImpl implements ListInteractor
 {
-    private static FavoritesStore favoritesStore = new FavoritesStore();
-    private static FavoritesInteractorImpl favoritesInteractor = new FavoritesInteractorImpl(favoritesStore);
+    private static ListStore listStore = new ListStore();
+    private static ListInteractorImpl favoritesInteractor = new ListInteractorImpl(listStore);
 
-    public static FavoritesInteractorImpl getInstance() {
+    public static ListInteractorImpl getInstance() {
         return favoritesInteractor;
     }
 
-    FavoritesInteractorImpl(FavoritesStore store)
+    ListInteractorImpl(ListStore store)
     {
-        favoritesStore = store;
+        listStore = store;
     }
 
     @Override
-    public void setFavorite(Movie movie)
+    public void addToList(Movie movie, int listId)
     {
-        favoritesStore.setFavorite(movie, 0);
+        listStore.setFavorite(movie, listId);
     }
 
     @Override
-    public boolean isFavorite(String id)
+    public boolean isOnList(String id, int listId)
     {
-        return favoritesStore.isFavorite(id, 0);
+        return listStore.isFavorite(id, listId);
     }
 
     @Override
-    public List<Movie> getFavorites()
+    public List<Movie> getMoviesOnList(int listId)
     {
         try
         {
-            return favoritesStore.getFavorites(0);
+            return listStore.getFavorites(listId);
         } catch (IOException ignored)
         {
             return new ArrayList<>(0);
@@ -50,9 +50,9 @@ public class FavoritesInteractorImpl implements FavoritesInteractor
     }
 
     @Override
-    public void unFavorite(String id)
+    public void removeFromList(String id, int listId)
     {
-        favoritesStore.unfavorite(id, 0);
+        listStore.unfavorite(id, listId);
     }
 
 
