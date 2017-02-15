@@ -43,7 +43,7 @@ public class DBClass {
         mainDB.execSQL("DELETE FROM SavedMovies");
     }
 
-    protected static List<Map<String, String>> query(String statement) {
+    public static List<Map<String, String>> query(String statement) {
 
         // Check for select
         if (statement == null)
@@ -75,5 +75,12 @@ public class DBClass {
         resultsCursor.close();
 
         return resultData;
+    }
+
+    public static Integer getLastInsertID() {
+        List<Map<String, String>> result;
+        result = DBClass.query("SELECT last_insert_rowid() AS lastID");
+
+        return Integer.parseInt( result.get(0).get("lastID") );
     }
 }
