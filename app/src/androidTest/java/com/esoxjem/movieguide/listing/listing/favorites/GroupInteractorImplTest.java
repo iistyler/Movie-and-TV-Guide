@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class GroupInteractorImplTest {
 
@@ -76,6 +77,32 @@ public class GroupInteractorImplTest {
         groups = groupInteractor.getAllGroups();
         assertEquals("Group2", groups.values().toArray()[0]);
 
+    }
+
+    @Test
+    public void getLastInsertIDTest() {
+        DBClass movieDB = DBClass.getInstance();
+        movieDB.createDB();
+        movieDB.resetDB();
+
+        Integer sample = -1;
+
+        // Create some groups
+        GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
+        groupInteractor.createGroup("Group1");
+        groupInteractor.createGroup("Group2");
+        Map<Integer, String> groups = groupInteractor.getAllGroups();
+
+        // Get the ID of the last inserted group
+        for (Map.Entry<Integer, String> current : groups.entrySet())
+            if ( current.getValue().equals("Group2") )
+                sample = current.getKey();
+
+        // Get the last insert ID from DB Class
+        Integer sample2 = DBClass.getLastInsertID();
+
+        // Compare to see if equal
+        assertEquals(sample, sample2);
     }
 
 }
