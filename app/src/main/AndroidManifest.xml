@@ -4,6 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-sdk android:minSdkVersion="16" />
 
     <application
         android:name=".BaseApplication"
@@ -27,6 +29,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".listing.MoviesListingActivity"/>
+        </activity>
+        <activity android:name=".NFC">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/com.esoxjem.movieguide" />
+            </intent-filter>
         </activity>
     </application>
 
