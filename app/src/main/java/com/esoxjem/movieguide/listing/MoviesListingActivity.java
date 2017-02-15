@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.esoxjem.movieguide.NFC;
 import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.Constants;
 import com.esoxjem.movieguide.details.MovieDetailsActivity;
@@ -126,8 +127,10 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         switch (item.getItemId())
         {
             case R.id.action_share:
-                Toast.makeText(MoviesListingActivity.this, "NFC Button Event", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MoviesListingActivity.this, "NFC Button Event", Toast.LENGTH_SHORT).show();
                 //Call required NFC Functions here.
+                Intent intent = new Intent(this, NFC.class);
+                startActivity(intent);
         }
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {

@@ -14,4 +14,5 @@
     <string name="most_popular">Most Popular</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="nfc_default">Tap phones to commence NFC\n\nPress back to return</string>
 </resources>
