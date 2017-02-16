@@ -4,7 +4,7 @@
           tools:context=".listing.MoviesListingActivity">
           <item
                 android:id="@+id/action_share"
-                android:icon="@drawable/ic_action_nfc"
+                android:icon="@drawable/ic_speaker_phone_white"
                 android:orderInCategory="100"
                 android:title="@string/action_filter"
                 app:showAsAction="always"/>
