@@ -52,7 +52,12 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         addDrawerItems();
         setupDrawer();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         getSupportActionBar().setHomeButtonEnabled(true);
 
         if (findViewById(R.id.movie_details_container) != null)
@@ -73,8 +78,8 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
     private void addDrawerItems()
     {
-        //String[] osArray = { "Most Popular", "Highest Rated", "Favorites"};
-        //mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        /* Create a new hash map containing the list heads as the key
+        *  and String lists as items */
         categoryStrings = new ArrayList<>();
         categoryItems = new HashMap<String, List<String>>();
 
@@ -90,6 +95,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         categoryItems.put(categoryStrings.get(1), null);
         categoryItems.put(categoryStrings.get(2), null);
 
+        /* Create a new list adapter */
         listAdapter = new MoviesListingDrawerAdapter(this, categoryStrings, categoryItems, mDrawerList);
     }
 
@@ -101,6 +107,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
             @Override
             public boolean onGroupClick(ExpandableListView parent, View view, int groupPosition, long id) {
+                /* If the list doesn't get collapsed/expanded, return true (we are handling it)*/
                 if (groupPosition != 0)
                     return true;
 
@@ -109,6 +116,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
         });
 
+        /*The next two functions are if we decide not to handle it. They will simply expand or collapse with notice*/
         mDrawerList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
             @Override
@@ -138,6 +146,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
         });
 
+        /* Function to toggle the drawer being open or closed */
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.string.drawer_open, R.string.drawer_close) {
 
             public void onDrawerOpened(View drawerView) {
@@ -151,6 +160,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
             }
         };
 
+        /* Make sure the toggle indicator is enabled and set the layout to use the new toggle */
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
     }

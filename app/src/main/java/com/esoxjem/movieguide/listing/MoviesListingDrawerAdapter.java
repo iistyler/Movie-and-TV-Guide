@@ -18,6 +18,8 @@ import java.util.List;
  * Created by tylermclean on 2017-02-15.
  */
 
+/* Implement the ExpandableListAdapter interface */
+
 public class MoviesListingDrawerAdapter extends BaseExpandableListAdapter {
 
     private Context context;
@@ -32,6 +34,7 @@ public class MoviesListingDrawerAdapter extends BaseExpandableListAdapter {
         this.listView = listView;
     }
 
+    /* Get number of groups in list */
     @Override
     public int getGroupCount() {
         try {
@@ -43,6 +46,7 @@ public class MoviesListingDrawerAdapter extends BaseExpandableListAdapter {
         return 0;
     }
 
+    /* Get number of children in list */
     @Override
     public int getChildrenCount(int i) {
         try {
@@ -79,6 +83,7 @@ public class MoviesListingDrawerAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    /* Creates the group/top level items */
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
         String headerTitle = (String) getGroup(i);
@@ -98,6 +103,7 @@ public class MoviesListingDrawerAdapter extends BaseExpandableListAdapter {
         return view;
     }
 
+    /* Creates the second level of items */
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
         final String childText = (String) getChild(i, i1);
