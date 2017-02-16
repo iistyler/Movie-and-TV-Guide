@@ -5,11 +5,11 @@ import android.os.StrictMode;
 
 import com.esoxjem.movieguide.details.DetailsComponent;
 import com.esoxjem.movieguide.details.DetailsModule;
-import com.esoxjem.movieguide.favorites.FavoritesModule;
+import com.esoxjem.movieguide.listing.favorites.DBClass;
+import com.esoxjem.movieguide.listing.favorites.FavoritesModule;
 import com.esoxjem.movieguide.listing.ListingComponent;
 import com.esoxjem.movieguide.listing.ListingModule;
 import com.esoxjem.movieguide.network.NetworkModule;
-import com.esoxjem.movieguide.listing.sorting.SortingModule;
 
 /**
  * @author arun
@@ -26,6 +26,7 @@ public class BaseApplication extends Application
         super.onCreate();
         StrictMode.enableDefaults();
         appComponent = createAppComponent();
+        DBClass.createDB();
     }
 
     private AppComponent createAppComponent()

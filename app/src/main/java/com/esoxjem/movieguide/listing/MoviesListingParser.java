@@ -51,7 +51,7 @@ public class MoviesListingParser
     }
 
     @NonNull
-    private static Movie getMovie(JSONObject result) throws JSONException
+    public static Movie getMovie(JSONObject result) throws JSONException
     {
         Movie movie = new Movie();
 

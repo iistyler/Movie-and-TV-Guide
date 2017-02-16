@@ -1,3 +1,6 @@
+.DS_Store
+.idea/*
+
 # Built application files
 *.apk
 *.ap_
@@ -38,6 +41,7 @@ captures/
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/libraries
+.idea/*
 
 # Keystore files
 *.jks

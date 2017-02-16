@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.esoxjem.movieguide.Api;
 import com.esoxjem.movieguide.Movie;
-import com.esoxjem.movieguide.favorites.FavoritesInteractor;
+import com.esoxjem.movieguide.listing.favorites.ListInteractor;
 import com.esoxjem.movieguide.network.RequestGenerator;
 import com.esoxjem.movieguide.network.RequestHandler;
 import com.esoxjem.movieguide.listing.sorting.SortType;
@@ -24,14 +24,14 @@ import rx.functions.Func0;
  */
 class MoviesListingInteractorImpl implements MoviesListingInteractor
 {
-    private FavoritesInteractor favoritesInteractor;
+    private ListInteractor listInteractor;
     private RequestHandler requestHandler;
     private SortingOptionStore sortingOptionStore;
 
-    MoviesListingInteractorImpl(FavoritesInteractor favoritesInteractor,
+    MoviesListingInteractorImpl(ListInteractor listInteractor,
                                 RequestHandler requestHandler, SortingOptionStore store)
     {
-        this.favoritesInteractor = favoritesInteractor;
+        this.listInteractor = listInteractor;
         this.requestHandler = requestHandler;
         sortingOptionStore = store;
     }
@@ -64,7 +64,7 @@ class MoviesListingInteractorImpl implements MoviesListingInteractor
                     return fetch(Api.GET_HIGHEST_RATED_MOVIES);
                 } else
                 {
-                    return favoritesInteractor.getFavorites();
+                    return listInteractor.getMoviesOnList(0);
                 }
             }
 
