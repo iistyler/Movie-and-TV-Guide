@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.esoxjem.movieguide.NFC;
@@ -22,14 +22,22 @@ import com.esoxjem.movieguide.details.MovieDetailsActivity;
 import com.esoxjem.movieguide.details.MovieDetailsFragment;
 import com.esoxjem.movieguide.Movie;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class MoviesListingActivity extends AppCompatActivity implements MoviesListingFragment.Callback
 {
     public static final String DETAILS_FRAGMENT = "DetailsFragment";
     private boolean twoPaneMode;
-    private ListView mDrawerList;
+    private ExpandableListView mDrawerList;
+    private MoviesListingDrawerAdapter listAdapter;
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+
+    private List<String> categoryStrings;
+    private HashMap<String, List<String>> categoryItems;
 
 
     @Override
@@ -39,7 +47,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         setContentView(R.layout.activity_main);
         setToolbar();
 
-        mDrawerList = (ListView)findViewById(R.id.navList);
+        mDrawerList = (ExpandableListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         addDrawerItems();
         setupDrawer();
@@ -65,19 +73,71 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
     private void addDrawerItems()
     {
-        String[] osArray = { "Most Popular", "Highest Rated", "Favorites"};
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-        mDrawerList.setAdapter(mAdapter);
+        //String[] osArray = { "Most Popular", "Highest Rated", "Favorites"};
+        //mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        categoryStrings = new ArrayList<>();
+        categoryItems = new HashMap<String, List<String>>();
 
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MoviesListingActivity.this, "Button Event", Toast.LENGTH_SHORT).show();
-            }
-        });
+        categoryStrings.add("Favourites");
+        categoryStrings.add("Stuff to Watch");
+        categoryStrings.add("Recomendations");
+
+        List<String> options = new ArrayList<>();
+        options.add("+ Add");
+        options.add("- Delete");
+
+        categoryItems.put(categoryStrings.get(0), options);
+        categoryItems.put(categoryStrings.get(1), null);
+        categoryItems.put(categoryStrings.get(2), null);
+
+        listAdapter = new MoviesListingDrawerAdapter(this, categoryStrings, categoryItems, mDrawerList);
     }
 
     private void setupDrawer() {
+
+        mDrawerList.setAdapter(listAdapter);
+
+        mDrawerList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View view, int groupPosition, long id) {
+                if (groupPosition != 0)
+                    return true;
+
+                return false;
+            }
+
+        });
+
+        mDrawerList.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Expanded", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+        mDrawerList.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Collapsed", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+        mDrawerList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " : " +
+                        categoryItems.get(categoryStrings.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+        });
+
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.string.drawer_open, R.string.drawer_close) {
 
             public void onDrawerOpened(View drawerView) {
