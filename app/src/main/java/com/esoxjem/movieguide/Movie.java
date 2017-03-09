@@ -12,6 +12,7 @@ public class Movie implements Parcelable
     private String backdropPath;
     private String title;
     private double voteAverage;
+    private int tvMovie;
 
     public Movie()
     {
@@ -27,6 +28,7 @@ public class Movie implements Parcelable
         backdropPath = in.readString();
         title = in.readString();
         voteAverage = in.readDouble();
+        tvMovie = in.readInt();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>()
@@ -53,6 +55,10 @@ public class Movie implements Parcelable
     {
         this.id = id;
     }
+
+    public void setTvMovie(int val) { this.tvMovie = val; }
+
+    public Boolean isMovie() { if(this.tvMovie == 0) { return false; } return true; }
 
     public String getOverview()
     {
@@ -130,5 +136,6 @@ public class Movie implements Parcelable
         parcel.writeString(backdropPath);
         parcel.writeString(title);
         parcel.writeDouble(voteAverage);
+        parcel.writeInt(tvMovie);
     }
 }

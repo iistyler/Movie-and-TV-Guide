@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MoviesListingActivity extends AppCompatActivity implements MoviesListingFragment.Callback
+public class MoviesListingGroupActivity extends AppCompatActivity implements MoviesListingGroupFragment.Callback
 {
     public static final String DETAILS_FRAGMENT = "DetailsFragment";
     private boolean twoPaneMode;
@@ -54,7 +56,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_grouping);
         setToolbar();
 
         context = this;
@@ -98,7 +100,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
-        
+
         Map<Integer, String> groups = groupInteractor.getAllGroups();
 
         List<Integer> groupKeysList = new ArrayList<>(groups.keySet());
@@ -189,12 +191,14 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
                 /**Toast.makeText(getApplicationContext(), groupId + " : " +
                         listId, Toast.LENGTH_SHORT).show();**/
 
+                mDrawerLayout.closeDrawers();
+
                 Intent intent = new Intent(context, MoviesListingGroupActivity.class);
                 startActivity(intent);
 
                 // TODO: Navigate to list with ID listId
 
-                return false;
+                return true;
             }
 
         });
@@ -257,7 +261,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         }
 
         if (mDrawerToggle.onOptionsItemSelected(item)) {
-          return true;
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

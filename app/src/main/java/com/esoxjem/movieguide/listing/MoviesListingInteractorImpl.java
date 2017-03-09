@@ -1,10 +1,14 @@
 package com.esoxjem.movieguide.listing;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
+import android.widget.EditText;
 
 import com.esoxjem.movieguide.Api;
 import com.esoxjem.movieguide.Movie;
-import com.esoxjem.movieguide.listing.favorites.ListInteractor;
+import com.esoxjem.movieguide.listing.lists.ListInteractor;
 import com.esoxjem.movieguide.network.RequestGenerator;
 import com.esoxjem.movieguide.network.RequestHandler;
 import com.esoxjem.movieguide.listing.sorting.SortType;
@@ -37,11 +41,53 @@ class MoviesListingInteractorImpl implements MoviesListingInteractor
     }
 
     @Override
-    public Observable<List<Movie>> fetchMovies()
+    public Observable<List<Movie>> fetchMovies() {
+        return Observable.defer(new Func0<Observable<List<Movie>>>() {
+            @Override
+            public Observable<List<Movie>> call() {
+                try {
+                    return Observable.just(get());
+                } catch (Exception e) {
+                    return Observable.error(e);
+                }
+            }
+
+            private List<Movie> get() throws IOException, JSONException {
+                int selectedOption = sortingOptionStore.getSelectedOption();
+                if (selectedOption == SortType.MOST_POPULAR_MOVIE.getValue()) {
+                    return fetch(Api.GET_POPULAR_MOVIES);
+                } else if (selectedOption == SortType.HIGHEST_RATED_MOVIE.getValue()) {
+                    return fetch(Api.GET_HIGHEST_RATED_MOVIES);
+                } else if (selectedOption == SortType.MOST_POPULAR_TV.getValue()) {
+                    return fetch(Api.GET_POPULAR_TV);
+                } else if (selectedOption == SortType.HIGHEST_RATED_TV.getValue()) {
+                    return fetch(Api.GET_HIGHEST_RATED_TV);
+                } else {
+                    return listInteractor.getMoviesOnList(0);
+                }
+            }
+
+            @NonNull
+            private List<Movie> fetch(String url) throws IOException, JSONException {
+
+                Request request = RequestGenerator.get(url);
+                String response = requestHandler.request(request);
+                return MoviesListingParser.parse(response);
+            }
+
+        });
+    }
+
+
+
+    public Observable<List<Movie>> searchMovies(String query)
     {
+
+        final String temp = Api.GET_SEARCH_MOVIES + query;
+
         return Observable.defer(new Func0<Observable<List<Movie>>>()
         {
-            @Override
+
             public Observable<List<Movie>> call()
             {
                 try
@@ -55,26 +101,59 @@ class MoviesListingInteractorImpl implements MoviesListingInteractor
 
             private List<Movie> get() throws IOException, JSONException
             {
-                int selectedOption = sortingOptionStore.getSelectedOption();
-                if (selectedOption == SortType.MOST_POPULAR.getValue())
-                {
-                    return fetch(Api.GET_POPULAR_MOVIES);
-                } else if (selectedOption == SortType.HIGHEST_RATED.getValue())
-                {
-                    return fetch(Api.GET_HIGHEST_RATED_MOVIES);
-                } else
-                {
-                    return listInteractor.getMoviesOnList(0);
-                }
+
+                return fetch(temp);
+
             }
 
             @NonNull
-            private List<Movie> fetch(String url) throws IOException, JSONException
-            {
+            private List<Movie> fetch(String url) throws IOException, JSONException {
+
                 Request request = RequestGenerator.get(url);
                 String response = requestHandler.request(request);
                 return MoviesListingParser.parse(response);
             }
+
         });
     }
+
+
+    public Observable<List<Movie>> searchTv(String query)
+    {
+
+        final String temp = Api.GET_SEARCH_TV + query;
+
+        return Observable.defer(new Func0<Observable<List<Movie>>>()
+        {
+
+            public Observable<List<Movie>> call()
+            {
+                try
+                {
+                    return Observable.just(get());
+                } catch (Exception e)
+                {
+                    return Observable.error(e);
+                }
+            }
+
+            private List<Movie> get() throws IOException, JSONException
+            {
+
+                return fetch(temp);
+
+            }
+
+            @NonNull
+            private List<Movie> fetch(String url) throws IOException, JSONException {
+
+                Request request = RequestGenerator.get(url);
+                String response = requestHandler.request(request);
+                return MoviesListingParser.parse(response);
+            }
+
+        });
+    }
+
+
 }

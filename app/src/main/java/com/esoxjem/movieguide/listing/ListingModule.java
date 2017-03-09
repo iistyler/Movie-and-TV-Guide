@@ -1,6 +1,6 @@
 package com.esoxjem.movieguide.listing;
 
-import com.esoxjem.movieguide.listing.favorites.ListInteractor;
+import com.esoxjem.movieguide.listing.lists.ListInteractor;
 import com.esoxjem.movieguide.network.RequestHandler;
 import com.esoxjem.movieguide.listing.sorting.SortingOptionStore;
 

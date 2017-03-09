@@ -5,11 +5,17 @@ package com.esoxjem.movieguide.listing.sorting;
  */
 interface SortingDialogView
 {
-    void setPopularChecked();
+    void setPopularMovieChecked();
 
-    void setHighestRatedChecked();
+    void setHighestRatedMovieChecked();
 
-    void setFavoritesChecked();
+    void setPopularTvChecked();
+
+    void setHighestRatedTvChecked();
+
+    void setSearchMoviesChecked();
+
+    void setSearchTvChecked();
 
     void dismissDialog();
 

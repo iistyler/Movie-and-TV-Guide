@@ -5,10 +5,12 @@ import android.os.StrictMode;
 
 import com.esoxjem.movieguide.details.DetailsComponent;
 import com.esoxjem.movieguide.details.DetailsModule;
-import com.esoxjem.movieguide.listing.favorites.DBClass;
-import com.esoxjem.movieguide.listing.favorites.FavoritesModule;
+import com.esoxjem.movieguide.listing.lists.DBClass;
+import com.esoxjem.movieguide.listing.lists.FavoritesModule;
 import com.esoxjem.movieguide.listing.ListingComponent;
 import com.esoxjem.movieguide.listing.ListingModule;
+import com.esoxjem.movieguide.listing.lists.GroupInteractorImpl;
+import com.esoxjem.movieguide.listing.lists.ListInteractorImpl;
 import com.esoxjem.movieguide.network.NetworkModule;
 
 /**

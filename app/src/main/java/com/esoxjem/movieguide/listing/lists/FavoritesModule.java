@@ -1,4 +1,4 @@
-package com.esoxjem.movieguide.listing.favorites;
+package com.esoxjem.movieguide.listing.lists;
 
 import com.esoxjem.movieguide.AppModule;
 
@@ -15,8 +15,8 @@ public class FavoritesModule
 {
     @Provides
     @Singleton
-    ListInteractor provideFavouritesInteractor(ListStore store)
+    ListInteractor provideFavouritesInteractor()
     {
-        return new ListInteractorImpl(store);
+        return new ListInteractorImpl();
     }
 }

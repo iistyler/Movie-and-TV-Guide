@@ -66,6 +66,60 @@ class MoviesListingPresenterImpl implements MoviesListingPresenter
                 });
     }
 
+    public void searchMovies(String query)
+    {
+        showLoading();
+        fetchSubscription = moviesInteractor.searchMovies(query).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Movie>>()
+                {
+                    @Override
+                    public void onCompleted()
+                    {
+                        // Do nothing
+                    }
+
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        onMovieFetchFailed(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Movie> movies)
+                    {
+                        onMovieFetchSuccess(movies);
+                    }
+                });
+    }
+
+    public void searchTv(String query)
+    {
+        showLoading();
+        fetchSubscription = moviesInteractor.searchTv(query).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Movie>>()
+                {
+                    @Override
+                    public void onCompleted()
+                    {
+                        // Do nothing
+                    }
+
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        onMovieFetchFailed(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Movie> movies)
+                    {
+                        onMovieFetchSuccess(movies);
+                    }
+                });
+    }
+
     private void showLoading()
     {
         if (isViewAttached())

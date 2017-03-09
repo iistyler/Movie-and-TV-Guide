@@ -23,6 +23,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".listing.MoviesListingGroupActivity"
+            android:parentActivityName=".listing.MoviesListingActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
             android:name=".details.MovieDetailsActivity"
             android:parentActivityName=".listing.MoviesListingActivity"
             android:theme="@style/AppTheme">

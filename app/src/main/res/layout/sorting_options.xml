@@ -12,33 +12,63 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/most_popular"
+            android:id="@+id/most_popular_movies"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:text="@string/most_popular"/>
+            android:text="@string/most_popular_movies"/>
 
         <RadioButton
-            android:id="@+id/highest_rated"
+            android:id="@+id/highest_rated_movies"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:text="@string/highest_rated"/>
+            android:text="@string/highest_rated_movies"/>
 
         <RadioButton
-            android:id="@+id/favorites"
+            android:id="@+id/most_popular_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:text="@string/favorites"/>
+            android:text="@string/most_popular_tv"/>
+
+        <RadioButton
+            android:id="@+id/highest_rated_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:text="@string/highest_rated_tv"/>
+
+        <RadioButton
+            android:id="@+id/search_movies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:text="Search Movies"/>
+
+        <RadioButton
+            android:id="@+id/search_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:text="Search TV"/>
     </RadioGroup>
 </LinearLayout>

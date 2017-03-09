@@ -21,8 +21,10 @@ public class MoviesListingParser
     public static final String RESULTS = "results";
     public static final String OVERVIEW = "overview";
     public static final String RELEASE_DATE = "release_date";
+    public static final String FIRST_AIR_DATE = "first_air_date";
     public static final String POSTER_PATH = "poster_path";
     public static final String TITLE = "title";
+    public static final String NAME = "name";
     public static final String VOTE_AVERAGE = "vote_average";
     private static final String BACKDROP_PATH = "backdrop_path";
     private static final String ID = "id";
@@ -55,38 +57,37 @@ public class MoviesListingParser
     {
         Movie movie = new Movie();
 
-        if (!result.isNull(ID))
-        {
+        if (!result.isNull(ID)) {
             movie.setId(result.getString(ID));
         }
 
-        if (!result.isNull(OVERVIEW))
-        {
+        if (!result.isNull(OVERVIEW)) {
             movie.setOverview(result.getString(OVERVIEW));
         }
 
-        if (!result.isNull(RELEASE_DATE))
-        {
+        if (!result.isNull(RELEASE_DATE)) {
             movie.setReleaseDate(String.valueOf(result.get(RELEASE_DATE)));
+        } else if (!result.isNull((FIRST_AIR_DATE))) {
+            movie.setReleaseDate(String.valueOf(result.get(FIRST_AIR_DATE)));
         }
 
-        if (!result.isNull(POSTER_PATH))
-        {
+        if (!result.isNull(POSTER_PATH)) {
             movie.setPosterPath(Api.POSTER_PATH + result.getString(POSTER_PATH));
         }
 
-        if (!result.isNull(BACKDROP_PATH))
-        {
+        if (!result.isNull(BACKDROP_PATH)) {
             movie.setBackdropPath(Api.BACKDROP_PATH + result.getString(BACKDROP_PATH));
         }
 
-        if (!result.isNull(TITLE))
-        {
+        if (!result.isNull(TITLE)) {
             movie.setTitle(result.getString(TITLE));
+            movie.setTvMovie(1);
+        } else if (!result.isNull(NAME)) {
+            movie.setTitle(result.getString(NAME));
+            movie.setTvMovie(0);
         }
 
-        if (!result.isNull(VOTE_AVERAGE))
-        {
+        if (!result.isNull(VOTE_AVERAGE)) {
             movie.setVoteAverage(result.getDouble(VOTE_AVERAGE));
         }
 

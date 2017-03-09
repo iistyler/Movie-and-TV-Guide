@@ -3,7 +3,7 @@ package com.esoxjem.movieguide.details;
 import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
-import com.esoxjem.movieguide.listing.favorites.ListInteractor;
+import com.esoxjem.movieguide.listing.lists.ListInteractor;
 import com.esoxjem.movieguide.util.RxUtils;
 
 import java.util.List;

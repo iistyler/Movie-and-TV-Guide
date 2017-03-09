@@ -14,5 +14,8 @@ public interface ListingComponent
 {
     MoviesListingFragment inject(MoviesListingFragment fragment);
 
+    /* Injected the new fragment */
+    MoviesListingGroupFragment inject(MoviesListingGroupFragment fragment);
+
     SortingDialogFragment inject(SortingDialogFragment fragment);
 }

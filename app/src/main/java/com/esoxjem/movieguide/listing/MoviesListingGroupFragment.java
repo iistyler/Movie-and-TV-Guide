@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MoviesListingFragment extends Fragment implements MoviesListingView
+public class MoviesListingGroupFragment extends Fragment implements MoviesListingView
 {
     @Inject
     MoviesListingPresenter moviesPresenter;
@@ -40,7 +40,7 @@ public class MoviesListingFragment extends Fragment implements MoviesListingView
     private List<Movie> movies = new ArrayList<>(20);
     private Callback callback;
 
-    public MoviesListingFragment()
+    public MoviesListingGroupFragment()
     {
         // Required empty public constructor
     }
@@ -64,7 +64,7 @@ public class MoviesListingFragment extends Fragment implements MoviesListingView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_grouping, container, false);
         ButterKnife.bind(this, rootView);
         initLayoutReferences();
         return rootView;

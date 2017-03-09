@@ -123,7 +123,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
     private void setToolbar()
     {
         collapsingToolbar.setContentScrimColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        collapsingToolbar.setTitle(getString(R.string.movie_details));
+        collapsingToolbar.setTitle("Movie Details");
         collapsingToolbar.setCollapsedTitleTextAppearance(R.style.CollapsedToolbar);
         collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedToolbar);
         collapsingToolbar.setTitleEnabled(true);
@@ -137,8 +137,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
             {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
-        } else
-        {
+        } else {
             // Don't inflate. Tablet is in landscape mode.
         }
     }
@@ -151,7 +150,12 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         releaseDate.setText(String.format(getString(R.string.release_date), movie.getReleaseDate()));
         rating.setText(String.format(getString(R.string.rating), String.valueOf(movie.getVoteAverage())));
         overview.setText(movie.getOverview());
-        movieDetailsPresenter.showTrailers(movie);
+        if (movie.isMovie()) {
+            collapsingToolbar.setTitle("Movie Details");
+            movieDetailsPresenter.showTrailers(movie);
+        } else {
+            collapsingToolbar.setTitle("TV Show Details");
+        }
         movieDetailsPresenter.showReviews(movie);
     }
 

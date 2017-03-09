@@ -12,4 +12,6 @@ import rx.Observable;
 public interface MoviesListingInteractor
 {
     Observable<List<Movie>> fetchMovies();
+    Observable<List<Movie>> searchMovies(String query);
+    Observable<List<Movie>> searchTv(String query);
 }

@@ -1,18 +1,20 @@
 <resources>
-    <string name="app_name">MovieGuide</string>
+    <string name="app_name">Movie and TV Guide</string>
     <string name="action_filter">Filter</string>
-    <string name="loading_movies">Loading Movies</string>
-    <string name="sort_by">Sort By</string>
-    <string name="movie_guide">MovieGuide</string>
+    <string name="loading_movies">Loading Shows</string>
+    <string name="sort_by">Filter By</string>
+    <string name="movie_guide">Movie and TV Guide</string>
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
     <string name="summary">Summary</string>
     <string name="release_date">Release Date: %s</string>
     <string name="rating">%s/10</string>
     <string name="favorites">Favorites</string>
-    <string name="highest_rated">Highest Rated</string>
-    <string name="most_popular">Most Popular</string>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="highest_rated_movies">Highest Rated Movies</string>
+    <string name="most_popular_movies">Most Popular Movies</string>
+    <string name="highest_rated_tv">Highest Rated TV Shows</string>
+    <string name="most_popular_tv">Most Popular TV Shows</string>
+    <string name="drawer_open">Open Navigation Drawer</string>
+    <string name="drawer_close">Close Navigation Drawer</string>
     <string name="nfc_default">Tap phones to commence NFC\n\nPress back to return</string>
 </resources>

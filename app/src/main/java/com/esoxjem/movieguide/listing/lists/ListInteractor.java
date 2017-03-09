@@ -1,6 +1,9 @@
-package com.esoxjem.movieguide.listing.favorites;
+package com.esoxjem.movieguide.listing.lists;
 
 import com.esoxjem.movieguide.Movie;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +22,9 @@ public interface ListInteractor
     // List Editing
     Map<Integer, String> getLists(int groupId);
     void changeListName(int id, String newName);
-    void createList(String listName, int groupId);
+    int createList(String listName, int groupId);
     void removeList(int id);
+    JSONArray exportLists(int groupId) throws JSONException;
+    void addToListById(int id, String type, int listId);
 
 }

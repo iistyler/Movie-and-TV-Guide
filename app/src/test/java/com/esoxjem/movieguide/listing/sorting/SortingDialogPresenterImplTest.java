@@ -32,46 +32,44 @@ public class SortingDialogPresenterImplTest
     @Test
     public void shouldCheckPopularIfLastSavedOptionIsPopular() throws Exception
     {
-        when(interactor.getSelectedSortingOption()).thenReturn(SortType.MOST_POPULAR.getValue());
+        when(interactor.getSelectedSortingOption()).thenReturn(SortType.MOST_POPULAR_MOVIE.getValue());
         presenter.setLastSavedOption();
-        verify(view).setPopularChecked();
+        verify(view).setPopularMovieChecked();
     }
 
     @Test
     public void shouldCheckHighestRatedIfLastSavedOptionIsHighestRated() throws Exception
     {
-        when(interactor.getSelectedSortingOption()).thenReturn(SortType.HIGHEST_RATED.getValue());
+        when(interactor.getSelectedSortingOption()).thenReturn(SortType.HIGHEST_RATED_MOVIE.getValue());
         presenter.setLastSavedOption();
-        verify(view).setHighestRatedChecked();
-    }
-
-    @Test
-    public void shouldCheckFavoritesIfLastSavedOptionIsFavorites() throws Exception
-    {
-        when(interactor.getSelectedSortingOption()).thenReturn(SortType.FAVORITES.getValue());
-        presenter.setLastSavedOption();
-        verify(view).setFavoritesChecked();
+        verify(view).setHighestRatedMovieChecked();
     }
 
     @Test
     public void onPopularMoviesSelected() throws Exception
     {
         presenter.onPopularMoviesSelected();
-        verify(interactor).setSortingOption(SortType.MOST_POPULAR);
+        verify(interactor).setSortingOption(SortType.MOST_POPULAR_MOVIE);
     }
 
     @Test
     public void onHighestRatedMoviesSelected() throws Exception
     {
         presenter.onHighestRatedMoviesSelected();
-        verify(interactor).setSortingOption(SortType.HIGHEST_RATED);
+        verify(interactor).setSortingOption(SortType.HIGHEST_RATED_MOVIE);
     }
 
     @Test
-    public void onFavoritesSelected() throws Exception
+    public void onPopularTvSelected() throws Exception
     {
-        presenter.onFavoritesSelected();
-        verify(interactor).setSortingOption(SortType.FAVORITES);
+        presenter.onPopularTvSelected();
+        verify(interactor).setSortingOption(SortType.MOST_POPULAR_TV);
     }
 
+    @Test
+    public void onHighestRatedTvSelected() throws Exception
+    {
+        presenter.onHighestRatedTvSelected();
+        verify(interactor).setSortingOption(SortType.HIGHEST_RATED_TV);
+    }
 }

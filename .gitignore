@@ -1,6 +1,9 @@
 .DS_Store
 .idea/*
 
+# Intellij files
+*.iml
+
 # Built application files
 *.apk
 *.ap_

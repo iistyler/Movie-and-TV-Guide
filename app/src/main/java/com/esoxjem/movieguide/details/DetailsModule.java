@@ -1,6 +1,6 @@
 package com.esoxjem.movieguide.details;
 
-import com.esoxjem.movieguide.listing.favorites.ListInteractor;
+import com.esoxjem.movieguide.listing.lists.ListInteractor;
 import com.esoxjem.movieguide.network.RequestHandler;
 
 import dagger.Module;

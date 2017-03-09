@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".listing.MoviesListingActivity">
+    tools:context=".listing.MoviesListingGroupActivity">
 
     <include layout="@layout/toolbar"/>
 
@@ -31,11 +31,11 @@
 
         <fragment
             android:id="@+id/fragment_listing"
-            android:name="com.esoxjem.movieguide.listing.MoviesListingFragment"
+            android:name="com.esoxjem.movieguide.listing.MoviesListingGroupFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/fragment_movies"/>
-            
+
         <ExpandableListView
             android:id="@+id/navList"
             android:layout_width="300dp"

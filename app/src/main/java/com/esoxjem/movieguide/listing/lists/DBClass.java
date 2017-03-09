@@ -1,4 +1,4 @@
-package com.esoxjem.movieguide.listing.favorites;
+package com.esoxjem.movieguide.listing.lists;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,7 +17,7 @@ public class DBClass {
     }
 
     // Database Name
-    private static final String DATABASE_NAME = "/data/data/com.esoxjem.movieguide/MovieStore";
+    private static final String DATABASE_NAME = "/data/data/com.esoxjem.movieguide/NewMovieDB";
     private static SQLiteDatabase mainDB = null;
 
     private static String[] databaseScheme = {
@@ -26,14 +26,18 @@ public class DBClass {
             "SavedMovies (movieId INTEGER NOT NULL, listId INTEGER NOT NULL)"
     };
 
-
     public static void createDB() {
 
         mainDB = SQLiteDatabase.openDatabase(DATABASE_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
 
+        int dbExists = checkIfExists();
+
         for (String aDatabaseScheme : databaseScheme) {
             mainDB.execSQL("CREATE TABLE IF NOT EXISTS " + aDatabaseScheme);
         }
+
+        if (dbExists == 0)
+            setupInitialDB();
     }
 
     // This is mainly for dev purposes
@@ -75,6 +79,26 @@ public class DBClass {
         resultsCursor.close();
 
         return resultData;
+    }
+
+    public static Integer checkIfExists() {
+        List<Map<String, String>> result;
+        result = DBClass.query("SELECT COUNT(name) as doesExist FROM sqlite_master WHERE type='table' AND name='Groups'");
+
+        if (Integer.parseInt( result.get(0).get("doesExist") ) > 0)
+            return 1;
+        else
+            return 0;
+    }
+
+    public static void setupInitialDB() {
+        GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
+
+        // Create some groups
+        int g1 = groupInteractor.createGroup("Favourites");
+        listInteractor.createList("Movies", g1);
+        listInteractor.createList("TV Shows", g1);
     }
 
     public static Integer getLastInsertID() {

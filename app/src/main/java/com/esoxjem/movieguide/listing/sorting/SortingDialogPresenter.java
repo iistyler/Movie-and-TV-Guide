@@ -11,7 +11,13 @@ public interface SortingDialogPresenter
 
     void onHighestRatedMoviesSelected();
 
-    void onFavoritesSelected();
+    void onSearchMoviesSelected();
+
+    void onSearchTvSelected();
+
+    void onPopularTvSelected();
+
+    void onHighestRatedTvSelected();
 
     void setView(SortingDialogView view);
 
