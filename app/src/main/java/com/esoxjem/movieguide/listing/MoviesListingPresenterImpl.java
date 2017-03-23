@@ -25,10 +25,10 @@ class MoviesListingPresenterImpl implements MoviesListingPresenter
     }
 
     @Override
-    public void setView(MoviesListingView view)
+    public void setView(MoviesListingView view, boolean group)
     {
         this.view = view;
-        displayMovies();
+        displayMovies(group);
     }
 
     @Override
@@ -39,10 +39,65 @@ class MoviesListingPresenterImpl implements MoviesListingPresenter
     }
 
     @Override
-    public void displayMovies()
+    public void displayMovies(boolean group)
     {
+        final boolean groupFlag = group;
         showLoading();
         fetchSubscription = moviesInteractor.fetchMovies().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Movie>>()
+                {
+                    @Override
+                    public void onCompleted()
+                    {
+                        // Do nothing
+                    }
+
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        onMovieFetchFailed(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Movie> movies)
+                    {
+                        onMovieFetchSuccessGroup(movies, groupFlag);
+                    }
+                });
+    }
+
+    public void searchMovies(String query)
+    {
+        showLoading();
+        fetchSubscription = moviesInteractor.searchMovies(query).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Movie>>()
+                {
+                    @Override
+                    public void onCompleted()
+                    {
+                        // Do nothing
+                    }
+
+                    @Override
+                    public void onError(Throwable e)
+                    {
+                        onMovieFetchFailed(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Movie> movies)
+                    {
+                        onMovieFetchSuccess(movies);
+                    }
+                });
+    }
+
+    public void searchTv(String query)
+    {
+        showLoading();
+        fetchSubscription = moviesInteractor.searchTv(query).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Movie>>()
                 {
@@ -133,6 +188,15 @@ class MoviesListingPresenterImpl implements MoviesListingPresenter
         if (isViewAttached())
         {
             view.showMovies(movies);
+        }
+    }
+
+    private void onMovieFetchSuccessGroup(List<Movie> movies, boolean group)
+    {
+        if (isViewAttached())
+        {
+            if (group == false)
+                view.showMovies(movies);
         }
     }
 

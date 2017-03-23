@@ -1,5 +1,7 @@
 package com.esoxjem.movieguide.listing.lists;
 
+import android.os.StrictMode;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +51,11 @@ public class GroupInteractorImpl implements GroupInteractor {
         movieDB.query("UPDATE Groups SET groupName = '" + newName + "' WHERE groupId = " + groupId);
     }
 
+
     public String exportGroups(List<Integer> groupId) throws JSONException {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         List<JSONObject> listOfGroups = new ArrayList<>();
@@ -69,9 +75,7 @@ public class GroupInteractorImpl implements GroupInteractor {
 
         // Go through each object to export
         for (Integer currentGroup : groupId) {
-
             if (groups.containsKey( currentGroup )) {
-
                 JSONObject json = new JSONObject();
                 json.put("name", groups.get( currentGroup ) );
                 json.put("lists", listInteractor.exportLists( currentGroup ));
@@ -83,6 +87,9 @@ public class GroupInteractorImpl implements GroupInteractor {
     }
 
     public void importGroups(String importData) throws JSONException {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         // Get Interactors
         JSONArray jsonGroups = new JSONArray(importData);
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
@@ -110,12 +117,9 @@ public class GroupInteractorImpl implements GroupInteractor {
                     String movieId = currentJsonMovie.getString("id");
                     String movieType = currentJsonMovie.getString("type");
 
-                    listInteractor.addToListById(Integer.parseInt(movieId), movieType, currentListId);
-                    System.out.println("        Movies: " + movieId);
+                    listInteractor.addToListById(Integer.parseInt(movieId), Integer.parseInt(movieType), currentListId);
                 }
-                System.out.println("    Lists: " + listName);
             }
-            System.out.println("Group: " + groupName);
         }
     }
 }

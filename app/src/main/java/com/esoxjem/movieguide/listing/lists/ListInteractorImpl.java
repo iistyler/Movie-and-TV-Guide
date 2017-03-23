@@ -1,5 +1,7 @@
 package com.esoxjem.movieguide.listing.lists;
 
+import android.util.Log;
+
 import com.esoxjem.movieguide.Movie;
 
 import org.json.JSONArray;
@@ -34,6 +36,17 @@ public class ListInteractorImpl implements ListInteractor
 		allLists = new ArrayList();
 	}
 
+    public void setupListStores() {
+        DBClass movieDB = DBClass.getInstance();
+        List<Map<String, String>> result = movieDB.query("Select listId, listName from lists");
+
+        for (Map<String, String> current : result) {
+            ListStore newListStore = new ListStore(Integer.parseInt( current.get("listId") ),
+                    current.get("listName"));
+            allLists.add(newListStore);
+        }
+    }
+
     public int getListCount() {
         return listCount;
     }
@@ -44,6 +57,7 @@ public class ListInteractorImpl implements ListInteractor
     public void resetListInteractor() {
         listCount = 0;
         allLists = new ArrayList();
+        setupListStores();
     }
 
     @Override
@@ -56,7 +70,7 @@ public class ListInteractorImpl implements ListInteractor
 	}
 
     @Override
-    public void addToListById(int id, String type, int listId)
+    public void addToListById(int id, int type, int listId)
     {
         ListStore temp = getListStoreByID(listId);
         temp.setFavoriteById(id, type);
@@ -74,6 +88,26 @@ public class ListInteractorImpl implements ListInteractor
         return false;
     }
 
+    public List<Movie> getMovieExportOnList(int listId) {
+        ListStore listStore = getListStoreByID(listId);
+
+        /* Return empty list if the listid can't be found */
+        if (listStore == null) {
+            /* Log the error and return an empty list */
+            Log.e("getMoviesOnList()", "Could not get the ListStore with ID " + String.valueOf(listId));
+            return new ArrayList<>(0);
+        }
+
+        try
+        {
+            return listStore.getFavoritesExport();
+        } catch (IOException ignored)
+        {
+            Log.e("getMoviesOnList()", "Tried to access NULL ListStore with ID " + String.valueOf(listId));
+            return new ArrayList<>(0);
+        }
+    }
+
     @Override
     public List<Movie> getMoviesOnList(int listId)
     {
@@ -81,8 +115,8 @@ public class ListInteractorImpl implements ListInteractor
 
         /* Return empty list if the listid can't be found */
         if (listStore == null) {
-            //TODO: Throw an error
-            System.out.println("Cant find list ID: " + listId);
+            /* Log the error and return an empty list */
+            Log.e("getMoviesOnList()", "Could not get the ListStore with ID " + String.valueOf(listId));
             return new ArrayList<>(0);
         }
 
@@ -91,8 +125,7 @@ public class ListInteractorImpl implements ListInteractor
             return listStore.getFavorites();
         } catch (IOException ignored)
         {
-            //TODO: Throw an error
-            System.out.println("Cant find list ID: " + listId);
+            Log.e("getMoviesOnList()", "Tried to access NULL ListStore with ID " + String.valueOf(listId));
             return new ArrayList<>(0);
         }
     }
@@ -120,6 +153,7 @@ public class ListInteractorImpl implements ListInteractor
             lists.put( Integer.parseInt( current.get("listId") ), current.get("listName") );
         }
 
+        /* Do we need error checking here? */
         return lists;
     }
 
@@ -129,7 +163,10 @@ public class ListInteractorImpl implements ListInteractor
         movieDB.query("UPDATE lists SET listName = '" + newName + "' WHERE listId = '" + listId + "'");
 
         ListStore temp = getListStoreByID(listId);
-        temp.setListName(newName);
+
+        if (temp != null) {
+            temp.setListName(newName);
+        }
     }
 
     @Override
@@ -179,28 +216,25 @@ public class ListInteractorImpl implements ListInteractor
 
 
         for (Integer currentList : listIds) {
-            System.out.println(lists.get(currentList) + " - " + currentList);
             JSONObject json = new JSONObject();
             json.put("name", lists.get(currentList) );
             json.put("movies", listInteractor.exportMovies( currentList ));
             listOfLists.put(json);
         }
-        System.out.println("X_ " + listOfLists.toString() );
 
         return listOfLists;
     }
 
     public JSONArray exportMovies(int listId) throws JSONException {
         JSONArray listOfMovies = new JSONArray();
-        List<Movie> movies = getMoviesOnList(listId);
+        List<Movie> movies = getMovieExportOnList(listId);
 
         for (Movie currentMovie : movies) {
             if (currentMovie.getId() == null)
                 continue;
-            System.out.println(listId + " - " + currentMovie.getId() + " -0- " + currentMovie.getTitle());
             JSONObject json = new JSONObject();
             json.put("id", currentMovie.getId() );
-            json.put("type", "movie");
+            json.put("type", currentMovie.getTvMovie() );
             listOfMovies.put(json);
         }
 

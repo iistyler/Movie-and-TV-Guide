@@ -1,6 +1,7 @@
 package com.esoxjem.movieguide.listing;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.esoxjem.movieguide.Api;
 import com.esoxjem.movieguide.Movie;
@@ -35,8 +36,7 @@ public class MoviesListingParser
         List<Movie> movies = new ArrayList<>(24);
         JSONObject response = new JSONObject(json);
 
-        if (!response.isNull(RESULTS))
-        {
+        if (!response.isNull(RESULTS)) {
             JSONArray results = response.getJSONArray(RESULTS);
 
             for (int i = 0; i < results.length(); i++)
@@ -44,9 +44,8 @@ public class MoviesListingParser
                 movies.add(getMovie(results.getJSONObject(i)));
             }
 
-        } else
-        {
-            // No results
+        } else {
+            Log.e("parse()", "Parsing JSON resulted in a NULL value. Offending JSON: " + json);
         }
 
         return movies;

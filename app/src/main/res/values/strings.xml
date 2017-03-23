@@ -16,5 +16,8 @@
     <string name="most_popular_tv">Most Popular TV Shows</string>
     <string name="drawer_open">Open Navigation Drawer</string>
     <string name="drawer_close">Close Navigation Drawer</string>
-    <string name="nfc_default">Tap phones to commence NFC\n\nPress back to return</string>
+    <string name="nfc_default">Select groups to transfer and tap phones to start NFC transfer\n\nPress back to return</string>
+    <string name="uh_oh_you_don_t_have_any_lists">Uh oh! You don\'t have have any lists!</string>
+    <string name="nfc_select_all">Select all</string>
+    <string name="nfc_unselect_all">Unselect all</string>
 </resources>

@@ -3,6 +3,8 @@ package com.esoxjem.movieguide.listing.lists;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.esoxjem.movieguide.Movie;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,14 +19,15 @@ public class DBClass {
     }
 
     // Database Name
-    private static final String DATABASE_NAME = "/data/data/com.esoxjem.movieguide/NewMovieDB";
+    private static final String DATABASE_NAME = "/data/data/com.esoxjem.movieguide/MovieGuideDB";
     private static SQLiteDatabase mainDB = null;
 
     private static String[] databaseScheme = {
             "Groups (groupId INTEGER PRIMARY KEY AUTOINCREMENT, groupName VARCHAR(255))",
             "Lists (listId INTEGER PRIMARY KEY AUTOINCREMENT, listName VARCHAR(255), groupId INTEGER NOT NULL)",
-            "SavedMovies (movieId INTEGER NOT NULL, listId INTEGER NOT NULL)"
+            "SavedMovies (movieId INTEGER NOT NULL, listId INTEGER NOT NULL, objectType INTEGER NOT NULL)" // Object type
     };
+
 
     public static void createDB() {
 
@@ -97,8 +100,31 @@ public class DBClass {
 
         // Create some groups
         int g1 = groupInteractor.createGroup("Favourites");
-        listInteractor.createList("Movies", g1);
+        int l1 = listInteractor.createList("Movies", g1);
         listInteractor.createList("TV Shows", g1);
+
+        listInteractor.addToListById(263115, 1, l1);
+        listInteractor.addToListById(1402, 0, l1);
+    }
+
+    // Used for testing NFC
+    public static void setupInitialNFC() {
+        GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
+
+        // Create some groups
+        int g1 = groupInteractor.createGroup("Brentons Favourites");
+        int g2 = groupInteractor.createGroup("Brentons Mixed Bag");
+        int l2 = listInteractor.createList("My TV Shows", g1);
+        int l1 = listInteractor.createList("Movies for Flights", g1);
+        int l3 = listInteractor.createList("Mixed Bag", g2);
+
+        listInteractor.addToListById(263115, 1, l1);
+        listInteractor.addToListById(63247, 1, l2);
+        listInteractor.addToListById(1402, 0, l1);
+        listInteractor.addToListById(63247, 1, l3);
+        listInteractor.addToListById(1402, 0, l3);
+        listInteractor.addToListById(11, 0, l1);
     }
 
     public static Integer getLastInsertID() {

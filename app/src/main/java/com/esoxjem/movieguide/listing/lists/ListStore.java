@@ -22,6 +22,7 @@ import javax.inject.Singleton;
 import okhttp3.Request;
 
 import static com.esoxjem.movieguide.listing.MoviesListingParser.getMovie;
+import static junit.framework.Assert.fail;
 
 /**
  * @author arun
@@ -43,13 +44,13 @@ public class ListStore
         this.listName = listName;
 	}
 
-    public void setFavoriteById(int id, String type) {
+    public void setFavoriteById(int id, int type) {
         /*TODO: Add type to db*/
 
         // Add movie to favourite
         DBClass movieDB = DBClass.getInstance();
-        movieDB.query("INSERT INTO SavedMovies (movieId, listId) VALUES ('" + id + "', '"
-                + listID + "')");
+        movieDB.query("INSERT INTO SavedMovies (movieId, listId, objectType) VALUES ('" + id + "', '"
+                + listID + "', '" + type + "')");
     }
 
     public void setFavorite(Movie movie)
@@ -62,8 +63,8 @@ public class ListStore
             return;
 
         // Add movie to favourite
-        movieDB.query("INSERT INTO SavedMovies (movieId, listId) VALUES ('" + movie.getId() + "', '"
-                + listID + "')");
+        movieDB.query("INSERT INTO SavedMovies (movieId, listId, objectType) VALUES ('" + movie.getId() + "', '"
+                + listID + ", '" + movie.getTvMovie() + "'')");
     }
 
     public boolean isFavorite(String movieId)
@@ -79,16 +80,36 @@ public class ListStore
         }
     }
 
-    public List<Movie> getFavorites() throws IOException
+    public List<Movie> getFavoritesExport() throws IOException
     {
-        ArrayList<Movie> movies = new ArrayList<>(24);
+        ArrayList<Movie> movies = new ArrayList<>();
 
         DBClass movieDB = DBClass.getInstance();
-        List<Map<String, String>> result = movieDB.query("Select movieId from SavedMovies WHERE " +
+        List<Map<String, String>> result = movieDB.query("Select movieId, objectType from SavedMovies WHERE " +
                 "listId = " + this.getID() + " ORDER BY movieId DESC");
 
         for (Map<String, String> current : result) {
-            movies.add( idToMovieObject( current.get("movieId"), 0 ));
+            Movie currentMovie = new Movie();
+            currentMovie.setId( current.get("movieId") );
+            currentMovie.setTvMovie( Integer.parseInt( current.get("objectType") ) );
+
+            movies.add(currentMovie);
+        }
+
+        return movies;
+
+    }
+
+    public List<Movie> getFavorites() throws IOException
+    {
+        ArrayList<Movie> movies = new ArrayList<>();
+
+        DBClass movieDB = DBClass.getInstance();
+        List<Map<String, String>> result = movieDB.query("Select movieId, objectType from SavedMovies WHERE " +
+                "listId = " + this.getID() + " ORDER BY movieId DESC");
+
+        for (Map<String, String> current : result) {
+            movies.add( idToMovieObject( current.get("movieId"), Integer.parseInt( current.get("objectType") ), 0 ));
         }
 
         return movies;
@@ -117,9 +138,14 @@ public class ListStore
         this.listName = name;
 	}
 
-    private Movie idToMovieObject(String id, int numTries) {
+    private Movie idToMovieObject(String id, int type, int numTries) {
+        String url;
 
-        String url = String.format(Api.GET_MOVIE_DETAILS, id.toString());
+        if (type == 1) {
+            url = String.format(Api.GET_MOVIE_DETAILS, id.toString());
+        } else {
+            url = String.format(Api.GET_TV_DETAILS, id.toString());
+        }
         Request request = RequestGenerator.get(url);
         Movie movieObject = new Movie();
 
@@ -137,7 +163,7 @@ public class ListStore
             // Throw an error
             if (numTries < 10) {
                 numTries++;
-                movieObject = idToMovieObject(id, numTries);
+                movieObject = idToMovieObject(id, type, numTries);
             } else {
                 //TODO: Throw an error
                 System.out.println("Could not fetch movie");
@@ -148,7 +174,7 @@ public class ListStore
         if ( !movieObject.getId().equals(id) ) {
             if (numTries < 10) {
                 numTries++;
-                movieObject = idToMovieObject(id, numTries);
+                movieObject = idToMovieObject(id, type, numTries);
             } else {
                 //TODO: Throw an error
                 System.out.println("Could not fetch movie");

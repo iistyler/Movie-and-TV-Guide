@@ -22,9 +22,8 @@ public class GroupInteractorImplTest {
 
     @Test
     public void createGroupTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
 
@@ -35,13 +34,16 @@ public class GroupInteractorImplTest {
         // Check to see if group exists
         Integer firstKey = groups.keySet().iterator().next();
         assertEquals(groups.get(firstKey), "Group1");
+
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void updateGroupTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
 
@@ -57,13 +59,16 @@ public class GroupInteractorImplTest {
         // Check group was updated
         groups = groupInteractor.getAllGroups();
         assertEquals(groups.values().toArray()[0], "Group2");
+
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void removeGroupTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
 
@@ -83,13 +88,15 @@ public class GroupInteractorImplTest {
         groups = groupInteractor.getAllGroups();
         assertEquals("Group2", groups.values().toArray()[0]);
 
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void getLastInsertIDTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         Integer sample = -1;
 
@@ -109,6 +116,10 @@ public class GroupInteractorImplTest {
 
         // Compare to see if equal
         assertEquals(sample, sample2);
+
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
@@ -116,11 +127,10 @@ public class GroupInteractorImplTest {
         // Get Interactors
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
-        DBClass movieDB = DBClass.getInstance();
 
         // Reset
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
         listInteractor.resetListInteractor();
 
         List<Integer> groups = new ArrayList<>();
@@ -137,41 +147,37 @@ public class GroupInteractorImplTest {
         int list2 = listInteractor.createList("List2", group1Id);
         int list3 = listInteractor.createList("List3", group2Id);
 
-        // Create some movies
-        Movie movie = new Movie();
-        movie.setId("157336");
-
-        Movie movie2 = new Movie();
-        movie2.setId("135397");
-
         // Add those movies to some lists
-        listInteractor.addToList(movie, list2);
-        listInteractor.addToList(movie2, list2);
-        listInteractor.addToList(movie, list3);
+        listInteractor.addToListById(157336, 1, list2);
+        listInteractor.addToListById(135397, 1, list2);
+        listInteractor.addToListById(157336, 1, list3);
 
         // Try the export and check accuracy
         try {
             String exportedGroup = groupInteractor.exportGroups(groups);
 
-            final String expectedExport = "[{\"name\":\"Group1\",\"lists\":[{\"name\":\"List1\",\"movies\":[]},{\"name\":\"List2\",\"movies\":[{\"id\":\"157336\",\"type\":\"movie\"},{\"id\":\"135397\",\"type\":\"movie\"}]}]}, {\"name\":\"Group2\",\"lists\":[{\"name\":\"List3\",\"movies\":[{\"id\":\"157336\",\"type\":\"movie\"}]}]}]";
+            final String expectedExport = "[{\"name\":\"Group1\",\"lists\":[{\"name\":\"List1\",\"movies\":[]},{\"name\":\"List2\",\"movies\":[{\"id\":\"157336\",\"type\":1},{\"id\":\"135397\",\"type\":1}]}]}, {\"name\":\"Group2\",\"lists\":[{\"name\":\"List3\",\"movies\":[{\"id\":\"157336\",\"type\":1}]}]}]";
             assertEquals(expectedExport, exportedGroup);
 
         } catch (JSONException e) {
             fail("Should not have thrown JSON exception on export");
         }
+
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void importGroupTest() {
-        final String importJSON = "[{\"name\":\"Group1\",\"lists\":[{\"name\":\"List1\",\"movies\":[]},{\"name\":\"List2\",\"movies\":[{\"id\":\"157336\",\"type\":\"movie\"},{\"id\":\"135397\",\"type\":\"movie\"}]}]}, {\"name\":\"Group2\",\"lists\":[{\"name\":\"List3\",\"movies\":[{\"id\":\"157336\",\"type\":\"movie\"}]}]}]";
+        final String importJSON = "[{\"name\":\"Group1\",\"lists\":[{\"name\":\"List1\",\"movies\":[]},{\"name\":\"List2\",\"movies\":[{\"id\":\"157336\",\"type\":1},{\"id\":\"135397\",\"type\":1}]}]}, {\"name\":\"Group2\",\"lists\":[{\"name\":\"List3\",\"movies\":[{\"id\":\"157336\",\"type\":1}]}]}]";
         // Get Interactors
         GroupInteractorImpl groupInteractor = GroupInteractorImpl.getInstance();
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
-        DBClass movieDB = DBClass.getInstance();
 
         // Reset
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
         listInteractor.resetListInteractor();
 
         List<Integer> groups = new ArrayList<>();
@@ -185,5 +191,9 @@ public class GroupInteractorImplTest {
         } catch (JSONException e) {
             fail("Should not have thrown JSON exception");
         }
+
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 }

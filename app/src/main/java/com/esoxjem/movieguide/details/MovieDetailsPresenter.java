@@ -11,6 +11,8 @@ public interface MovieDetailsPresenter
 
     void showTrailers(Movie movie);
 
+    void showIMDB(Movie movie);
+
     void showReviews(Movie movie);
 
     void showFavoriteButton(Movie movie);

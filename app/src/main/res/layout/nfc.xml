@@ -4,11 +4,66 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tapLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/nfc_default"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:padding="20dp"/>
+
+    <Button
+        android:id="@+id/selectAll"
+        android:layout_below="@id/tapLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nfc_select_all"
+        android:padding="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/innerListView"
+        android:weightSum="3">
+        <Button
+            android:id="@+id/add_testButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add 1 to DB"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/addB_testButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Add 2 to DB"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/clearAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Clear"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/noGroups"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:text="@string/uh_oh_you_don_t_have_any_lists"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:padding="20dp" />
+    
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/nfc_default"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        android:gravity="center"
-        android:textSize="40px" />
+        android:choiceMode="multipleChoice"
+        android:layout_marginTop="-98dp"
+        android:id="@+id/allGroups" />
 </LinearLayout>

@@ -1,11 +1,14 @@
 package com.esoxjem.movieguide.details;
 
+import android.util.Log;
+
 import com.esoxjem.movieguide.Movie;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
 import com.esoxjem.movieguide.listing.lists.ListInteractor;
 import com.esoxjem.movieguide.util.RxUtils;
 
+import java.util.Hashtable;
 import java.util.List;
 
 import rx.Subscriber;
@@ -89,6 +92,17 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
         if (isViewAttached())
         {
             view.showTrailers(videos);
+        }
+    }
+
+    public void showIMDB(Movie movie) {
+        try {
+            Hashtable<String,String> values = movieDetailsInteractor.getRatings(movie.getId(), movie.isMovie());
+            view.showAdditionalInfo(values);
+        } catch (Exception e) {
+
+            // Log the failure to make request
+            Log.e("showIMDB()", "Error: " + e.toString() + " trying to get ratings for movie ID " + movie.getId().toString());
         }
     }
 

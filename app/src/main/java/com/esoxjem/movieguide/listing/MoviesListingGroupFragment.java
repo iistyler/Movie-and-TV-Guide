@@ -37,7 +37,8 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     RecyclerView moviesListing;
 
     private RecyclerView.Adapter adapter;
-    private List<Movie> movies = new ArrayList<>(20);
+    private List<Movie> movies = new ArrayList<>();
+    private List<Movie> newMovies = new ArrayList<>();
     private Callback callback;
 
     public MoviesListingGroupFragment()
@@ -59,6 +60,7 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
         setHasOptionsMenu(true);
         setRetainInstance(true);
         ((BaseApplication) getActivity().getApplication()).createListingComponent().inject(this);
+
     }
 
     @Override
@@ -74,27 +76,29 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        moviesPresenter.setView(this);
+        moviesPresenter.setView(this, true);
+        //showMovies(newMovies);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        /*
         switch (item.getItemId())
         {
             case R.id.action_sort:
                 displaySortingOptions();
         }
-
+        */
         return super.onOptionsItemSelected(item);
     }
-
+    /*
     private void displaySortingOptions()
     {
         DialogFragment sortingDialogFragment = SortingDialogFragment.newInstance(moviesPresenter);
         sortingDialogFragment.show(getFragmentManager(), "Select Quantity");
     }
-
+    */
     private void initLayoutReferences()
     {
         moviesListing.setHasFixedSize(true);
@@ -121,7 +125,10 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
         this.movies.addAll(movies);
         moviesListing.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
-        callback.onMoviesLoaded(movies.get(0));
+
+        if(movies.size()>0){
+            callback.onMoviesLoaded(movies.get(0));
+        }
     }
 
     @Override
@@ -146,6 +153,12 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     public void onMovieClicked(Movie movie)
     {
         callback.onMovieClicked(movie);
+    }
+
+
+    public void changeMovieList(List<Movie> movies) {
+        System.out.println("The movie size in function is: " + movies.size());
+        showMovies(movies);
     }
 
     @Override

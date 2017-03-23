@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
+import android.os.StrictMode;
 
 import com.esoxjem.movieguide.NFC;
 import com.esoxjem.movieguide.R;
@@ -48,7 +50,7 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
     private List<String> categoryStrings;
     private List<Integer> categoryIds;
     private HashMap<String, List<String>> categoryItems;
-
+    private List<Movie> moviesList;
     private Context context;
 
 
@@ -60,6 +62,34 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
         setToolbar();
 
         context = this;
+
+        MoviesListingGroupFragment frag = (MoviesListingGroupFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_listing);
+
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
+
+        //Getting listID from MovieListingActivity.
+        int value1 = getIntent().getIntExtra("MOVIES_ID",0);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        moviesList = listInteractor.getMoviesOnList(value1);
+
+        /*
+        Movie fakeMovie = new Movie();
+        fakeMovie.setId("Chris' Blunder");
+        fakeMovie.setOverview("This is a small yet simple movie about a guy named Chris who deletes all of our work we did for 3.5 hours");
+        fakeMovie.setReleaseDate("Litterally 40 minutes ago");
+        fakeMovie.setTitle("Chris' Blunder");
+        fakeMovie.setTvMovie(0);
+        fakeMovie.setVoteAverage(10);
+        fakeMovie.setBackdropPath("https://www.google.ca/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiL8uPa6ejSAhUk3IMKHRECAcgQjRwIBw&url=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fchris-vincent-822405a0&psig=AFQjCNGXvvy-osbh36iehmJM2qrC5sEjoA&ust=1490227877364380");
+        fakeMovie.setPosterPath("https://www.google.ca/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiL8uPa6ejSAhUk3IMKHRECAcgQjRwIBw&url=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fchris-vincent-822405a0&psig=AFQjCNGXvvy-osbh36iehmJM2qrC5sEjoA&ust=1490227877364380");
+
+        moviesList.add(fakeMovie);
+        System.out.println("The size of the movie list is: " + moviesList.size());
+        */
+        frag.changeMovieList(moviesList);
 
         mDrawerList = (ExpandableListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
@@ -194,6 +224,7 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
                 mDrawerLayout.closeDrawers();
 
                 Intent intent = new Intent(context, MoviesListingGroupActivity.class);
+                intent.putExtra("MOVIES_ID", listId);
                 startActivity(intent);
 
                 // TODO: Navigate to list with ID listId
@@ -271,7 +302,7 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main_group, menu);
         return true;
     }
 
@@ -321,5 +352,13 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
         super.onPause();
 
         mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        addDrawerItems();
+        setupDrawer();
+        listAdapter.notifyDataSetChanged();
     }
 }

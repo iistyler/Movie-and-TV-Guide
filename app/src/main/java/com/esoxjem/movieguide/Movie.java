@@ -13,6 +13,10 @@ public class Movie implements Parcelable
     private String title;
     private double voteAverage;
     private int tvMovie;
+    /* Might want later down the road?
+    private String imdbId;
+    private double imdb;
+    private int mc; */
 
     public Movie()
     {
@@ -29,6 +33,10 @@ public class Movie implements Parcelable
         title = in.readString();
         voteAverage = in.readDouble();
         tvMovie = in.readInt();
+        /* Might want later down the road?
+        imdbId = in.readString();
+        imdb = in.readDouble();
+        mc = in.readInt();*/
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>()
@@ -50,21 +58,20 @@ public class Movie implements Parcelable
     {
         return id;
     }
-
     public void setId(String id)
     {
         this.id = id;
     }
 
+    // Movie = 1, TV Show = 0
     public void setTvMovie(int val) { this.tvMovie = val; }
-
+    public int getTvMovie() { return this.tvMovie; }
     public Boolean isMovie() { if(this.tvMovie == 0) { return false; } return true; }
 
     public String getOverview()
     {
         return overview;
     }
-
     public void setOverview(String overview)
     {
         this.overview = overview;
@@ -74,7 +81,6 @@ public class Movie implements Parcelable
     {
         return releaseDate;
     }
-
     public void setReleaseDate(String releaseDate)
     {
         this.releaseDate = releaseDate;
@@ -84,7 +90,6 @@ public class Movie implements Parcelable
     {
         return posterPath;
     }
-
     public void setPosterPath(String posterPath)
     {
         this.posterPath = posterPath;
@@ -94,7 +99,6 @@ public class Movie implements Parcelable
     {
         return backdropPath;
     }
-
     public void setBackdropPath(String backdropPath)
     {
         this.backdropPath = backdropPath;
@@ -104,7 +108,6 @@ public class Movie implements Parcelable
     {
         return title;
     }
-
     public void setTitle(String title)
     {
         this.title = title;
@@ -114,11 +117,23 @@ public class Movie implements Parcelable
     {
         return voteAverage;
     }
-
     public void setVoteAverage(double voteAverage)
     {
         this.voteAverage = voteAverage;
     }
+
+    /* Might want later down the road?
+    public String getImdbId() { return imdbId; }
+    public void setImdbId(String theId) { imdbId = theId; }
+
+    public double getImdb() { return imdb; }
+    public void setImdb(double theScore) { imdb = theScore; }
+
+    public int getMc()
+    {
+        return mc;
+    }
+    public void setMc(int theScore) { mc = theScore; }*/
 
     @Override
     public int describeContents()
@@ -137,5 +152,9 @@ public class Movie implements Parcelable
         parcel.writeString(title);
         parcel.writeDouble(voteAverage);
         parcel.writeInt(tvMovie);
+        /* Might want later down the road?
+        parcel.writeString(imdbId);
+        parcel.writeDouble(imdb);
+        parcel.writeInt(mc);*/
     }
 }

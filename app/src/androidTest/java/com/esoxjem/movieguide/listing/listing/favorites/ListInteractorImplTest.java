@@ -12,18 +12,14 @@ import java.util.Map;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 public class ListInteractorImplTest {
 
     @Test
     public void setFavoriteTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
-
-        // Create a movie object with the ID of Interstellar
-        Movie movie = new Movie();
-        movie.setId("157336");
+        DBClass.createDB();
+        DBClass.resetDB();
 
         // Get the list interactor and setup for test
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
@@ -33,7 +29,7 @@ public class ListInteractorImplTest {
         int id = listInteractor.createList("Test", 0);
 
         // Add to favourites
-        listInteractor.addToList(movie, id);
+        listInteractor.addToListById(157336, 1, id);
 
         // Verify it added properly
         assertEquals(1, listInteractor.getListCount());
@@ -46,13 +42,8 @@ public class ListInteractorImplTest {
 
     @Test
     public void unfavouriteTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
-
-        // Create a movie object with the ID of Interstellar
-        Movie movie = new Movie();
-        movie.setId("157336");
+        DBClass.createDB();
+        DBClass.resetDB();
 
         // Get list interactor and setup for test
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
@@ -62,7 +53,7 @@ public class ListInteractorImplTest {
         int id = listInteractor.createList("Test", 0);
 
         // Add to favourites
-        listInteractor.addToList(movie, id);
+        listInteractor.addToListById(157336, 1, id);
         List<Movie> newFavorites = listInteractor.getMoviesOnList(id);
 
         // Check it was added
@@ -75,13 +66,14 @@ public class ListInteractorImplTest {
         newFavorites = listInteractor.getMoviesOnList(id);
         assertEquals(newFavorites.size(), 0);
 
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void isFavouriteTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         // Get list interactor and setup for tests
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
@@ -91,15 +83,11 @@ public class ListInteractorImplTest {
         Boolean isFav = listInteractor.isOnList("157336", 0);
         assertFalse(isFav);
 
-        // Create a movie object with the ID of Interstellar
-        Movie movie = new Movie();
-        movie.setId("157336");
-
         // Create the list
         int id = listInteractor.createList("Test", 0);
 
         // Add to list
-        listInteractor.addToList(movie, id);
+        listInteractor.addToListById(157336, 1, id);
 
         // Make sure its not currently a favorite
         isFav = listInteractor.isOnList("157336", id);
@@ -107,13 +95,15 @@ public class ListInteractorImplTest {
 
         // Remove list
         listInteractor.removeList(0);
+
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void createListTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
         listInteractor.resetListInteractor();
@@ -128,13 +118,15 @@ public class ListInteractorImplTest {
 
         // Remove list
         listInteractor.removeList(0);
+
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void removeListTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         // Get list interactor
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
@@ -170,13 +162,16 @@ public class ListInteractorImplTest {
         // Verify the list was removed from database
         List<Movie> removedFav = listInteractor.getMoviesOnList(0);
         assertEquals(0, removedFav.size());
+
+        // Reset Database
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
     }
 
     @Test
     public void updateListTest() {
-        DBClass movieDB = DBClass.getInstance();
-        movieDB.createDB();
-        movieDB.resetDB();
+        DBClass.createDB();
+        DBClass.resetDB();
 
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
         listInteractor.resetListInteractor();
@@ -195,6 +190,89 @@ public class ListInteractorImplTest {
         assertEquals(groups.values().toArray()[0], "List7");
 
         listInteractor.removeList(0);
+
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
+    }
+
+    @Test
+    public void wrongListIDTest() {
+
+        /* Want to make sure the following functions handle getting a ListID
+        * that does not exist:
+        * -> isOnList()
+        * -> getMoviesOnList()
+        * -> removeFromList()
+        * -> changeListName()
+        * -> removeLists()
+        * */
+
+        DBClass.createDB();
+        DBClass.resetDB();
+
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
+        listInteractor.resetListInteractor();
+
+        // Create a list
+        int listid = listInteractor.createList("List1", 2);
+
+
+        // Ensure isOnList() handles incorrect IDs
+        assertEquals(false, listInteractor.isOnList("nothing", -1));
+
+        // Ensure we get an empty list from getMoviesOnList()
+        List<Movie> movieList = listInteractor.getMoviesOnList(-1);
+        assertEquals(0, movieList.size());
+
+        // Ensure removeFromList() doesn't break on invalid ID
+        listInteractor.removeFromList("ID", -1);
+
+        // Ensure changeListName() doesn't break on invalid ID
+        listInteractor.changeListName(-1, "test");
+
+        // Ensure removeLists() handles invalid IDs
+        listInteractor.removeList(-1);
+
+    }
+
+
+    @Test
+    public void TVShowTest() {
+        DBClass.createDB();
+        DBClass.resetDB();
+
+        ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
+        listInteractor.resetListInteractor();
+
+        // Create a sample list and add a TV show to it
+        int l1 = listInteractor.createList("List1", 1);
+        listInteractor.addToListById(1402, 0, l1);
+
+        // Check if correct TV show was fetched (and was not a movie)
+        List<Movie> movieList = listInteractor.getMoviesOnList(l1);
+        if (!movieList.get(0).getTitle().equals("The Walking Dead")) {
+            fail("TV Show could not be added to list");
+        }
+
+        DBClass.resetDB();
+        DBClass.setupInitialDB();
+    }
+
+    @Test
+    public void checkTVShow() {
+        // Test movie
+        Movie movie = new Movie();
+        movie.setTvMovie(1);
+
+        if (movie.getTvMovie() != 1)
+            fail("1 Should be movie");
+
+        // Test TV Show
+        Movie tvShow = new Movie();
+        movie.setTvMovie(0);
+
+        if (tvShow.getTvMovie() != 0)
+            fail("0 Should be TV Show");
     }
 }
 

@@ -74,7 +74,7 @@ public class MoviesListingFragment extends Fragment implements MoviesListingView
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        moviesPresenter.setView(this);
+        moviesPresenter.setView(this, false);
     }
 
     @Override

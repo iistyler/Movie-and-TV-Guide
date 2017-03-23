@@ -5,13 +5,13 @@ package com.esoxjem.movieguide.listing;
  */
 public interface MoviesListingPresenter
 {
-    void displayMovies();
+    void displayMovies(boolean group);
 
     void searchMovies(String querry);
 
     void searchTv(String querry);
 
-    void setView(MoviesListingView view);
+    void setView(MoviesListingView view, boolean group);
 
     void destroy();
 }

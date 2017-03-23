@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
 import com.squareup.picasso.Picasso;
 
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,6 +70,8 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
     FloatingActionButton favorite;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.movie_runtime)
+    TextView runTime;
 
     private Movie movie;
 
@@ -114,8 +118,9 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
             {
                 this.movie = movie;
                 movieDetailsPresenter.setView(this);
-                movieDetailsPresenter.showDetails((movie));
+                movieDetailsPresenter.showDetails(movie);
                 movieDetailsPresenter.showFavoriteButton(movie);
+                movieDetailsPresenter.showIMDB(movie);
             }
         }
     }
@@ -142,13 +147,25 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         }
     }
 
+    public void showAdditionalInfo(Hashtable<String,String> values) {
+        if (values.size() > 2) {
+            if (values.get("mc").contains("N/A")) {
+                rating.setText(String.format("%s, & IMDB: %s/10", rating.getText().toString(), values.get("imdb")));
+                runTime.setText(String.format("Number of Seasons: %s", values.get("totalSeasons")));
+            } else {
+                rating.setText(String.format("%s, IMDB: %s/10, & Metascore: %s/100", rating.getText().toString(), values.get("imdb"), values.get("mc")));
+                runTime.setText(String.format("Runtime: %s minutes", values.get("runtime")));
+            }
+        }
+    }
+
     @Override
     public void showDetails(Movie movie)
     {
         Glide.with(getContext()).load(movie.getBackdropPath()).into(poster);
         title.setText(movie.getTitle());
         releaseDate.setText(String.format(getString(R.string.release_date), movie.getReleaseDate()));
-        rating.setText(String.format(getString(R.string.rating), String.valueOf(movie.getVoteAverage())));
+        rating.setText(String.format("TMDB: %s/10", String.valueOf(movie.getVoteAverage())));
         overview.setText(movie.getOverview());
         if (movie.isMovie()) {
             collapsingToolbar.setTitle("Movie Details");
@@ -252,6 +269,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
                 break;
 
             default:
+                Log.d("onClick()", "Unknown item was pressed with view.getId() == " + view.getId());
                 break;
         }
     }

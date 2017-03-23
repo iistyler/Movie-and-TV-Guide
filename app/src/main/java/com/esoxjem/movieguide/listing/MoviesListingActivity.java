@@ -190,6 +190,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
                         listId, Toast.LENGTH_SHORT).show();**/
 
                 Intent intent = new Intent(context, MoviesListingGroupActivity.class);
+                intent.putExtra("MOVIES_ID", listId);
                 startActivity(intent);
 
                 // TODO: Navigate to list with ID listId
@@ -317,5 +318,13 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         super.onPause();
 
         mDrawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        addDrawerItems();
+        setupDrawer();
+        listAdapter.notifyDataSetChanged();
     }
 }

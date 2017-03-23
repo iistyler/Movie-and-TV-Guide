@@ -130,22 +130,22 @@ public class SortingDialogFragment extends DialogFragment implements SortingDial
         {
             case R.id.most_popular_movies:
                 sortingDialogPresenter.onPopularMoviesSelected();
-                moviesListingPresenter.displayMovies();
+                moviesListingPresenter.displayMovies(false);
                 break;
 
             case R.id.highest_rated_movies:
                 sortingDialogPresenter.onHighestRatedMoviesSelected();
-                moviesListingPresenter.displayMovies();
+                moviesListingPresenter.displayMovies(false);
                 break;
 
             case R.id.most_popular_tv:
                 sortingDialogPresenter.onPopularTvSelected();
-                moviesListingPresenter.displayMovies();
+                moviesListingPresenter.displayMovies(false);
                 break;
 
             case R.id.highest_rated_tv:
                 sortingDialogPresenter.onHighestRatedTvSelected();
-                moviesListingPresenter.displayMovies();
+                moviesListingPresenter.displayMovies(false);
                 break;
 
             case R.id.search_movies:

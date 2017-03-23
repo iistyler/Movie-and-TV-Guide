@@ -25,6 +25,6 @@ public interface ListInteractor
     int createList(String listName, int groupId);
     void removeList(int id);
     JSONArray exportLists(int groupId) throws JSONException;
-    void addToListById(int id, String type, int listId);
-
+    void addToListById(int id, int type, int listId);
+    void setupListStores();
 }
