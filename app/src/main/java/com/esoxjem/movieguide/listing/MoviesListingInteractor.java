@@ -9,9 +9,9 @@ import rx.Observable;
 /**
  * @author arun
  */
-public interface MoviesListingInteractor
-{
+public interface MoviesListingInteractor {
     Observable<List<Movie>> fetchMovies();
     Observable<List<Movie>> searchMovies(String query);
     Observable<List<Movie>> searchTv(String query);
+    Observable<List<Movie>> appendList(int mode, int page, String query);
 }

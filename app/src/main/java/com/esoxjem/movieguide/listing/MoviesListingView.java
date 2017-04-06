@@ -10,7 +10,12 @@ import java.util.List;
 interface MoviesListingView
 {
     void showMovies(List<Movie> movies);
+    void moreMovies(List<Movie> movies);
+    void setMode(int mode);
+    int getMode();
     void loadingStarted();
     void loadingFailed(String errorMessage);
     void onMovieClicked(Movie movie);
+    public void setLastQuery(String newQuery);
+    void toggleLoad();
 }

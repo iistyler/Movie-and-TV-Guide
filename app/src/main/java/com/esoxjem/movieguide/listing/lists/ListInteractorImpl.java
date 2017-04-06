@@ -84,7 +84,6 @@ public class ListInteractorImpl implements ListInteractor
             return temp.isFavorite(id);
         }
 
-        /* TODO: do we wan't to return false if list doesn't exist? */
         return false;
     }
 

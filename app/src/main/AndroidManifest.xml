@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     package="com.esoxjem.movieguide"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.NFC" />
@@ -13,21 +14,24 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".listing.MoviesListingActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".listing.MoviesListingGroupActivity"
             android:parentActivityName=".listing.MoviesListingActivity"
             android:theme="@style/AppTheme">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".details.MovieDetailsActivity"
             android:parentActivityName=".listing.MoviesListingActivity"
             android:theme="@style/AppTheme">
@@ -35,7 +39,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".listing.MoviesListingActivity"/>
         </activity>
-        <activity android:name=".NFC">
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".details.MovieDetailsGroupActivity"
+            android:parentActivityName=".listing.MoviesListingGroupActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".listing.MoviesListingGroupActivity"/>
+        </activity>
+        <activity
+            android:name=".NFC"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />

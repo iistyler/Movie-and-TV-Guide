@@ -1,11 +1,21 @@
 package com.esoxjem.movieguide.details;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.animation.AnimationUtils;
 
 import com.esoxjem.movieguide.Movie;
+import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
 import com.esoxjem.movieguide.listing.lists.ListInteractor;
+import com.esoxjem.movieguide.listing.lists.ListInteractorImpl;
 import com.esoxjem.movieguide.util.RxUtils;
 
 import java.util.Hashtable;
@@ -19,7 +29,7 @@ import rx.schedulers.Schedulers;
 /**
  * @author arun
  */
-class MovieDetailsPresenterImpl implements MovieDetailsPresenter
+class MovieDetailsPresenterImpl extends AppCompatActivity implements MovieDetailsPresenter
 {
     private MovieDetailsView view;
     private MovieDetailsInteractor movieDetailsInteractor;
@@ -30,7 +40,7 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
     MovieDetailsPresenterImpl(MovieDetailsInteractor movieDetailsInteractor, ListInteractor listInteractor)
     {
         this.movieDetailsInteractor = movieDetailsInteractor;
-        this.listInteractor = listInteractor;
+        this.listInteractor = ListInteractorImpl.getInstance();
     }
 
     @Override
@@ -142,9 +152,9 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
     }
 
     @Override
-    public void showFavoriteButton(Movie movie)
+    public void showFavoriteButton(Movie movie, int listId)
     {
-        boolean isFavorite = listInteractor.isOnList(movie.getId(), 0);
+        boolean isFavorite = listInteractor.isOnList(movie.getId(), listId);
         if (isViewAttached())
         {
             if (isFavorite)
@@ -158,19 +168,36 @@ class MovieDetailsPresenterImpl implements MovieDetailsPresenter
     }
 
     @Override
-    public void onFavoriteClick(Movie movie)
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onFavoriteClick(Movie movie, int listId, Activity currentActivity, View currentView)
     {
+        listInteractor = ListInteractorImpl.getInstance();
         if (isViewAttached())
         {
-            boolean isFavorite = listInteractor.isOnList(movie.getId(), 0);
+            boolean isFavorite = listInteractor.isOnList(movie.getId(), listId);
+
             if (isFavorite)
             {
-                listInteractor.removeFromList(movie.getId(), 0);
-                view.showUnFavorited();
+                listInteractor.removeFromList(movie.getId(), listId);
+                showFavoriteButton(movie, listId);
             } else
             {
-                listInteractor.addToList(movie, 0);
-                view.showFavorited();
+                if (listId == -1) {
+                    LayoutInflater inflater = currentActivity.getLayoutInflater();
+                    View newView = inflater.inflate(R.layout.add_to_list, null, true);
+                    newView.startAnimation(AnimationUtils.loadAnimation(currentActivity, android.R.anim.slide_in_left));
+                    currentActivity.setContentView(newView);
+
+                    MovieDetailsPresenterAddList.setupList(currentActivity, movie, currentView);
+
+                }
+
+                listInteractor.addToList(movie, listId);
+                showFavoriteButton(movie, listId);
             }
         }
     }

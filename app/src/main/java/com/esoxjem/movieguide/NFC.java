@@ -1,9 +1,7 @@
 package com.esoxjem.movieguide;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ExpandableListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -13,35 +11,24 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.StrictMode;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.esoxjem.movieguide.listing.lists.DBClass;
-import com.esoxjem.movieguide.listing.lists.GroupInteractor;
 import com.esoxjem.movieguide.listing.lists.GroupInteractorImpl;
-import com.esoxjem.movieguide.listing.lists.ListInteractorImpl;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import butterknife.Bind;
 
 
 public class NFC extends Activity implements CreateNdefMessageCallback {
@@ -61,9 +48,9 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
         }
 
         // Add the selected to the export list.
-        for (int i=0; i<checkList.getAdapter().getCount(); i++) {
+        for (int i=0; i<checked.size(); i++) {
             if (checked.valueAt(i)) {
-                toExport.add(values[i]);
+                toExport.add(values[checked.keyAt(i)]);
             } else {
                 allSelected = false;
             }
@@ -71,6 +58,11 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
 
         // Ensure no false outputs are sent out.
         if (toExport.size() == 0) {
+            allSelected = false;
+        }
+
+        // Ensure all outputs are released.
+        if (!(values.length == checked.size())) {
             allSelected = false;
         }
 
@@ -91,15 +83,15 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
             }
         } catch (Exception e) {
             new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage("Error")
-                    .setCancelable(false)
-                    .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    })
-                    .show();
+                .setTitle("Error")
+                .setMessage("Error")
+                .setCancelable(false)
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
         }
 
         // Ensure the select all input is updated.
@@ -165,7 +157,6 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
         Map<Integer, String> groupsList = GroupInteractorImpl.getInstance().getAllGroups();
         final Integer[] keyList = new Integer[groupsList.size()];
         final String[] items = new String[groupsList.size()];
-        boolean[] checkedItems = null;
 
         this.allChecked = false;
 
@@ -186,82 +177,33 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
             theList.add(items[i]);
         }
 
+        // Make label invisible if there are contents in the list.
+        if (keyList.length > 0) {
+            TextView label = (TextView)findViewById(R.id.noGroups);
+            label.setVisibility(View.INVISIBLE);
+        }
+
         // Select all groups in the list.
         final Button selectAll = (Button) this.findViewById(R.id.selectAll);
         selectAll.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                toggleAllChecked();
+            toggleAllChecked();
+            if (NFC.this.getAllChecked()) {
+                selectAll.setText(R.string.nfc_unselect_all);
+            } else {
+                selectAll.setText(R.string.nfc_select_all);
+            }
+
+            for (int i=0; i<keyList.length; i++) {
                 if (NFC.this.getAllChecked()) {
-                    selectAll.setText(R.string.nfc_unselect_all);
+                    checkList.setItemChecked(i, true);
                 } else {
-                    selectAll.setText(R.string.nfc_select_all);
+                    checkList.setItemChecked(i, false);
                 }
-
-                for (int i=0; i<keyList.length; i++) {
-                    if (NFC.this.getAllChecked()) {
-                        checkList.setItemChecked(i, true);
-                    } else {
-                        checkList.setItemChecked(i, false);
-                    }
-                }
-
-                // Update the export list as per the selections.
-                updateExport(keyList);
             }
-        });
 
-        // Test buttons - add static content including mixed movie/tv list, and 2 groups with content.
-        Button addB = (Button) this.findViewById(R.id.addB_testButton);
-        addB.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                DBClass.setupInitialNFC();
-
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Added to Database")
-                        .setMessage(GroupInteractorImpl.getInstance().getAllGroups().toString())
-                        .setCancelable(false)
-                        .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
-            }
-        });
-
-        // Add favourites group with movies and tv show lists.
-        Button add = (Button) this.findViewById(R.id.add_testButton);
-        add.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                DBClass.setupInitialDB();
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Added to Database")
-                        .setMessage(GroupInteractorImpl.getInstance().getAllGroups().toString())
-                        .setCancelable(false)
-                        .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
-            }
-        });
-
-        // Clear database entirely.
-        Button clearAll = (Button) this.findViewById(R.id.clearAll);
-        clearAll.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                DBClass.resetDB();
-                new AlertDialog.Builder(v.getContext())
-                        .setTitle("Database Reset")
-                        .setMessage("Database was reset.")
-                        .setCancelable(false)
-                        .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
+            // Update the export list as per the selections.
+            updateExport(keyList);
             }
         });
 
@@ -276,14 +218,16 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
                 }
             }
         });
+
+        this.allChecked = false;
     }
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         NdefMessage msg = new NdefMessage(
-                new NdefRecord[]{
-                        new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, null, this.getCurrentExport().getBytes())
-                }
+            new NdefRecord[]{
+                new NdefRecord(NdefRecord.TNF_MIME_MEDIA, mimeBytes, null, this.getCurrentExport().getBytes())
+            }
         );
         return msg;
     }
@@ -308,13 +252,13 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
      */
     void processIntent(Intent intent) {
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-        String message = "Lists were received!";
 
         // Only one message sent during the beam
         NdefMessage msg = (NdefMessage) rawMsgs[0];
 
         if (new String(msg.getRecords()[0].getPayload()).length() != 0) {
             // Building message of list added.
+            String message = "";
             try {
                 JSONArray jsonGroups = new JSONArray(new String(msg.getRecords()[0].getPayload()));
 
@@ -335,15 +279,15 @@ public class NFC extends Activity implements CreateNdefMessageCallback {
             }
 
             new AlertDialog.Builder(this)
-                    .setTitle("List(s) Received")
-                    .setMessage(message)
-                    .setCancelable(false)
-                    .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    })
-                    .show();
+                .setTitle("List(s) Received")
+                .setMessage(message)
+                .setCancelable(false)
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                    }
+                })
+                .show();
 
             try {
                 GroupInteractorImpl.getInstance().importGroups(new String(msg.getRecords()[0].getPayload()));

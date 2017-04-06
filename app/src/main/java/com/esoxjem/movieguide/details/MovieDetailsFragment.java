@@ -1,7 +1,11 @@
 package com.esoxjem.movieguide.details;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +13,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +34,14 @@ import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.Review;
 import com.esoxjem.movieguide.Video;
 import com.squareup.picasso.Picasso;
+import com.yydcdut.rxmarkdown.RxMDConfiguration;
+import com.yydcdut.rxmarkdown.RxMDTextView;
+import com.yydcdut.rxmarkdown.RxMarkdown;
+import com.yydcdut.rxmarkdown.callback.OnLinkClickCallback;
+import com.yydcdut.rxmarkdown.factory.EditFactory;
+import com.yydcdut.rxmarkdown.factory.TextFactory;
+import com.yydcdut.rxmarkdown.loader.DefaultLoader;
+import com.yydcdut.rxmarkdown.loader.RxMDImageLoader;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -38,6 +51,10 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subjects.Subject;
 
 public class MovieDetailsFragment extends Fragment implements MovieDetailsView, View.OnClickListener
 {
@@ -73,6 +90,8 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
     @Bind(R.id.movie_runtime)
     TextView runTime;
 
+    int listId;
+
     private Movie movie;
 
     public MovieDetailsFragment()
@@ -80,12 +99,13 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         // Required empty public constructor
     }
 
-    public static MovieDetailsFragment getInstance(@NonNull Movie movie)
+    public static MovieDetailsFragment getInstance(@NonNull Movie movie, int listId)
     {
         Bundle args = new Bundle();
         args.putParcelable(Constants.MOVIE, movie);
         MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
         movieDetailsFragment.setArguments(args);
+        movieDetailsFragment.listId = listId;
         return movieDetailsFragment;
     }
 
@@ -119,7 +139,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
                 this.movie = movie;
                 movieDetailsPresenter.setView(this);
                 movieDetailsPresenter.showDetails(movie);
-                movieDetailsPresenter.showFavoriteButton(movie);
+                movieDetailsPresenter.showFavoriteButton(movie, listId);
                 movieDetailsPresenter.showIMDB(movie);
             }
         }
@@ -151,10 +171,14 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         if (values.size() > 2) {
             if (values.get("mc").contains("N/A")) {
                 rating.setText(String.format("%s, & IMDB: %s/10", rating.getText().toString(), values.get("imdb")));
-                runTime.setText(String.format("Number of Seasons: %s", values.get("totalSeasons")));
+                if (values.get("totalSeasons") != null) {
+                    runTime.setText(String.format("Number of Seasons: %s", values.get("totalSeasons")));
+                }
             } else {
                 rating.setText(String.format("%s, IMDB: %s/10, & Metascore: %s/100", rating.getText().toString(), values.get("imdb"), values.get("mc")));
-                runTime.setText(String.format("Runtime: %s minutes", values.get("runtime")));
+                if (values.get("runtime") != null) {
+                    runTime.setText(String.format("Runtime: %s minutes", values.get("runtime")));
+                }
             }
         }
     }
@@ -226,15 +250,49 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
 
             reviewsContainer.removeAllViews();
             LayoutInflater inflater = getActivity().getLayoutInflater();
+
             for (Review review : reviews)
             {
-                ViewGroup reviewContainer = (ViewGroup) inflater.inflate(R.layout.review, reviewsContainer, false);
+
+                Log.d("REVIEW", "Trying to add review " + review.getAuthor());
+                final ViewGroup reviewContainer = (ViewGroup) inflater.inflate(R.layout.review, reviewsContainer, false);
                 TextView reviewAuthor = ButterKnife.findById(reviewContainer, R.id.review_author);
-                TextView reviewContent = ButterKnife.findById(reviewContainer, R.id.review_content);
+                final RxMDTextView reviewContent = (RxMDTextView) ButterKnife.findById(reviewContainer, R.id.review_content);
                 reviewAuthor.setText(review.getAuthor());
-                reviewContent.setText(review.getContent());
+
+                String content = review.getContent();
+
                 reviewContent.setOnClickListener(this);
                 reviewsContainer.addView(reviewContainer);
+
+                /* Want to display the reviews with the RxMarkdown library as the reviews have markdown syntax */
+                /* Attach the reviewContent textview to the content */
+                Log.d("REVIEW", "review = " + content);
+
+                RxMarkdown.with(content, reviewContainer.getContext())
+                        .config(null)
+                        .factory(TextFactory.create())
+                        .intoObservable()
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<CharSequence>() {
+
+                            @Override
+                            public void onCompleted() {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.d("REVIEW", "ERROR: " + e.toString());
+                            }
+
+                            @Override
+                            public void onNext(CharSequence charSequence) {
+                                Log.d("REVIEW", "onNext() called with: " + charSequence);
+                                reviewContent.setText(charSequence, TextView.BufferType.SPANNABLE);
+                            }
+                        });
+
             }
         }
     }
@@ -242,12 +300,16 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
     @Override
     public void showFavorited()
     {
+        ColorStateList csl = new ColorStateList(new int[][]{{}}, new int[]{Color.parseColor("#7D0010")});
+        favorite.setBackgroundTintList(csl);
         favorite.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite_white_24dp));
     }
 
     @Override
     public void showUnFavorited()
     {
+        ColorStateList csl = new ColorStateList(new int[][]{{}}, new int[]{Color.parseColor("#1F466D")});
+        favorite.setBackgroundTintList(csl);
         favorite.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_favorite_border_white_24dp));
     }
 
@@ -261,11 +323,11 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
                 break;
 
             case R.id.review_content:
-                onReviewClick((TextView) view);
+                onReviewClick((RxMDTextView) view);
                 break;
 
             case R.id.favorite:
-                onFavoriteClick();
+                onFavoriteClick(view);
                 break;
 
             default:
@@ -274,7 +336,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         }
     }
 
-    private void onReviewClick(TextView view)
+    private void onReviewClick(RxMDTextView view)
     {
         if (view.getMaxLines() == 5)
         {
@@ -292,9 +354,10 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         startActivity(playVideoIntent);
     }
 
-    private void onFavoriteClick()
+    private void onFavoriteClick(View view)
     {
-        movieDetailsPresenter.onFavoriteClick(movie);
+
+        movieDetailsPresenter.onFavoriteClick(movie, this.listId, this.getActivity(), view);
     }
 
     @Override
@@ -311,4 +374,5 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsView, 
         super.onDestroy();
         ((BaseApplication) getActivity().getApplication()).releaseDetailsComponent();
     }
+
 }

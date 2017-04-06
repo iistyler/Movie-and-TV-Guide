@@ -77,6 +77,9 @@ public class BaseApplication extends Application
 
     public ListingComponent getListingComponent()
     {
+        if (listingComponent == null) {
+            return createListingComponent();
+        }
         return listingComponent;
     }
 }

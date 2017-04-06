@@ -1,5 +1,8 @@
 package com.esoxjem.movieguide.details;
 
+import android.app.Activity;
+import android.view.View;
+
 import com.esoxjem.movieguide.Movie;
 
 /**
@@ -15,9 +18,9 @@ public interface MovieDetailsPresenter
 
     void showReviews(Movie movie);
 
-    void showFavoriteButton(Movie movie);
+    void showFavoriteButton(Movie movie, int listId);
 
-    void onFavoriteClick(Movie movie);
+    void onFavoriteClick(Movie movie, int listId, Activity currentActivity, View currentView);
 
     void setView(MovieDetailsView view);
 

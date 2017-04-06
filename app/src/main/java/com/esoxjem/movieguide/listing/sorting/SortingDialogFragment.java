@@ -61,7 +61,7 @@ public class SortingDialogFragment extends DialogFragment implements SortingDial
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        ((BaseApplication) getActivity().getApplication()).getListingComponent().inject(this);
+        ((BaseApplication) getActivity().getApplication()).getListingComponent().inject(this);      // error at this line
         sortingDialogPresenter.setView(this);
     }
 
@@ -81,46 +81,51 @@ public class SortingDialogFragment extends DialogFragment implements SortingDial
         return dialog;
     }
 
-    private void initViews()
-    {
+    private void initViews() {
         sortingDialogPresenter.setLastSavedOption();
         sortingOptionsGroup.setOnCheckedChangeListener(this);
     }
 
     @Override
-    public void setPopularMovieChecked()
-    {
+    public void setPopularMovieChecked() {
         mostPopularMovie.setChecked(true);
+        //moviesListingPresenter.displayMovies(false, 0);
+        //moviesListingPresenter.setMode(0);
     }
 
     @Override
-    public void setHighestRatedMovieChecked()
-    {
+    public void setHighestRatedMovieChecked() {
         highestRatedMovie.setChecked(true);
+        //moviesListingPresenter.displayMovies(false, 1);
+        //moviesListingPresenter.setMode(1);
     }
 
     @Override
-    public void setPopularTvChecked()
-    {
+    public void setPopularTvChecked() {
         mostPopularTv.setChecked(true);
+        //moviesListingPresenter.displayMovies(false, 2);
+        //moviesListingPresenter.setMode(2);
     }
 
     @Override
-    public void setHighestRatedTvChecked()
-    {
+    public void setHighestRatedTvChecked() {
         highestRatedTv.setChecked(true);
+        //moviesListingPresenter.displayMovies(false, 3);
+        //moviesListingPresenter.setMode(3);
     }
 
     @Override
-    public void setSearchMoviesChecked()
-    {
-        searchMovies.setChecked(false);
+    public void setSearchMoviesChecked() {
+        searchMovies.setChecked(true);
+        //moviesListingPresenter.displayMovies(false, 4);
+        //moviesListingPresenter.setMode(4);
     }
 
     @Override
-    public void setSearchTvChecked()
-    {
-        searchTv.setChecked(false);
+    public void setSearchTvChecked() {
+        searchTv.setChecked(true);
+        //moviesListingPresenter.displayMovies(false, 5);
+        //moviesListingPresenter.setMode(5);
     }
 
     @Override
@@ -130,65 +135,71 @@ public class SortingDialogFragment extends DialogFragment implements SortingDial
         {
             case R.id.most_popular_movies:
                 sortingDialogPresenter.onPopularMoviesSelected();
-                moviesListingPresenter.displayMovies(false);
+                moviesListingPresenter.displayMovies(false, 0);
                 break;
 
             case R.id.highest_rated_movies:
                 sortingDialogPresenter.onHighestRatedMoviesSelected();
-                moviesListingPresenter.displayMovies(false);
+                moviesListingPresenter.displayMovies(false, 1);
                 break;
 
             case R.id.most_popular_tv:
                 sortingDialogPresenter.onPopularTvSelected();
-                moviesListingPresenter.displayMovies(false);
+                moviesListingPresenter.displayMovies(false, 2);
                 break;
 
             case R.id.highest_rated_tv:
                 sortingDialogPresenter.onHighestRatedTvSelected();
-                moviesListingPresenter.displayMovies(false);
+                moviesListingPresenter.displayMovies(false, 3);
                 break;
 
             case R.id.search_movies:
-                final EditText txtUrl = new EditText(getContext());
-                txtUrl.setSingleLine(true);
+                if(searchMovies.isPressed()) {
+                    final EditText txtUrl = new EditText(getContext());
+                    txtUrl.setSingleLine(true);
 
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Search Movies")
-                        .setView(txtUrl)
-                        .setPositiveButton("Search", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                sortingDialogPresenter.onSearchMoviesSelected();
-                                moviesListingPresenter.searchMovies(txtUrl.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                searchMovies.setChecked(false);
-                            }
-                        })
-                        .show();
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Search Movies")
+                            .setView(txtUrl)
+                            .setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    sortingDialogPresenter.onSearchMoviesSelected();
+                                    moviesListingPresenter.searchMovies(txtUrl.getText().toString());
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    searchMovies.setChecked(false);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
 
                 break;
 
             case R.id.search_tv:
-                final EditText txtUrl2 = new EditText(getContext());
-                txtUrl2.setSingleLine(true);
+                if(searchTv.isPressed()) {
+                    final EditText txtUrl2 = new EditText(getContext());
+                    txtUrl2.setSingleLine(true);
 
-                new AlertDialog.Builder(getContext())
-                        .setTitle("Search TV")
-                        .setView(txtUrl2)
-                        .setPositiveButton("Search", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                sortingDialogPresenter.onSearchTvSelected();
-                                moviesListingPresenter.searchTv(txtUrl2.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                searchTv.setChecked(false);
-                            }
-                        })
-                        .show();
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Search TV")
+                            .setView(txtUrl2)
+                            .setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    sortingDialogPresenter.onSearchTvSelected();
+                                    moviesListingPresenter.searchTv(txtUrl2.getText().toString());
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    searchTv.setChecked(false);
+                                   dialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
 
                 break;
 

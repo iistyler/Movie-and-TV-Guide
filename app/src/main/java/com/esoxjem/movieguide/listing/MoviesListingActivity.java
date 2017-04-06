@@ -104,21 +104,25 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         List<Integer> groupKeysList = new ArrayList<>(groups.keySet());
         Collections.sort(groupKeysList);
 
-        // Go through each group and add it
-        for (Integer currentGroupId : groupKeysList) {
-            categoryStrings.add( groups.get(currentGroupId) );
-            categoryIds.add( currentGroupId );
+        categoryStrings.add(0, "");
 
-            String currentGroupName = groups.get(currentGroupId);
+        // Go through each group and add it
+        for (int i = 0; i < groupKeysList.size(); i++) {
+            categoryStrings.add( groups.get(groupKeysList.get(i)) );
+            categoryIds.add(groupKeysList.get(i));
+
+            String currentGroupName = groups.get(groupKeysList.get(i));
             List<String> listArray = new ArrayList<>();
 
             // go through each list and add it
-            Map<Integer, String> lists = listInteractor.getLists( currentGroupId );
+            Map<Integer, String> lists = listInteractor.getLists(groupKeysList.get(i));
             List<Integer> listKeysList = new ArrayList<>(lists.keySet());
             Collections.sort(listKeysList);
 
-            for (Integer currentListId : listKeysList) {
-                listArray.add( lists.get(currentListId) );
+            System.out.println(currentGroupName + ": " + lists);
+
+            for (int j = 0; j < listKeysList.size(); j++) {
+                listArray.add(lists.get(listKeysList.get(j)) );
             }
 
             categoryItems.put(currentGroupName, listArray);
@@ -150,7 +154,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Expanded", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Expanded", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -159,7 +163,7 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Collapsed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Collapsed", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -173,12 +177,15 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
 
                 // Get Info
                 ListInteractor listInteractor = ListInteractorImpl.getInstance();
-                Integer groupId = categoryIds.get(groupPosition);
+
+                addDrawerItems();
+
+                Integer groupId = categoryIds.get(groupPosition - 1);
                 Map<Integer, String> lists = listInteractor.getLists(groupId);
                 String listName = categoryItems.get(categoryStrings.get(groupPosition)).get(childPosition);
 
                 // Fetch list ID
-                Integer listId = 0;
+                Integer listId = -1;
                 for (Map.Entry<Integer, String> list : lists.entrySet()) {
                     if (list.getValue().equals( listName )) {
                         listId = list.getKey();
@@ -302,12 +309,14 @@ public class MoviesListingActivity extends AppCompatActivity implements MoviesLi
         Bundle extras = new Bundle();
         extras.putParcelable(Constants.MOVIE, movie);
         intent.putExtras(extras);
+        intent.putExtra("MOVIES_ID", -1);
         startActivity(intent);
     }
 
     private void loadMovieFragment(Movie movie)
     {
-        MovieDetailsFragment movieDetailsFragment = MovieDetailsFragment.getInstance(movie);
+        int listId = getIntent().getIntExtra("MOVIES_ID",0);
+        MovieDetailsFragment movieDetailsFragment = MovieDetailsFragment.getInstance(movie, listId);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.movie_details_container, movieDetailsFragment, DETAILS_FRAGMENT)
                 .commit();

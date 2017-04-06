@@ -17,6 +17,6 @@ public class FavoritesModule
     @Singleton
     ListInteractor provideFavouritesInteractor()
     {
-        return new ListInteractorImpl();
+        return ListInteractorImpl.getInstance();
     }
 }

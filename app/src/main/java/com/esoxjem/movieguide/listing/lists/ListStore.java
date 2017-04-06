@@ -64,14 +64,14 @@ public class ListStore
 
         // Add movie to favourite
         movieDB.query("INSERT INTO SavedMovies (movieId, listId, objectType) VALUES ('" + movie.getId() + "', '"
-                + listID + ", '" + movie.getTvMovie() + "'')");
+                + listID + "', '" + movie.getTvMovie() + "')");
     }
 
     public boolean isFavorite(String movieId)
     {
         DBClass movieDB = DBClass.getInstance();
         List<Map<String, String>> result = movieDB.query("Select Count(movieId) AS numMovies from "+
-                "SavedMovies WHERE movieId = '" + movieId + "' AND listId = '" + this.getID() + "'");
+                "SavedMovies WHERE movieId = '" + movieId + "' AND listId = " + this.getID() );
 
         if (Integer.parseInt( result.get(0).get("numMovies") ) > 0) {
             return true;

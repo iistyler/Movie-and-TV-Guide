@@ -26,6 +26,7 @@ import com.esoxjem.movieguide.Constants;
 import com.esoxjem.movieguide.details.MovieDetailsActivity;
 import com.esoxjem.movieguide.details.MovieDetailsFragment;
 import com.esoxjem.movieguide.Movie;
+import com.esoxjem.movieguide.details.MovieDetailsGroupActivity;
 import com.esoxjem.movieguide.listing.lists.GroupInteractorImpl;
 import com.esoxjem.movieguide.listing.lists.ListInteractor;
 import com.esoxjem.movieguide.listing.lists.ListInteractorImpl;
@@ -52,6 +53,7 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
     private HashMap<String, List<String>> categoryItems;
     private List<Movie> moviesList;
     private Context context;
+    private int listID;
 
 
     @Override
@@ -68,27 +70,13 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
         ListInteractorImpl listInteractor = ListInteractorImpl.getInstance();
 
         //Getting listID from MovieListingActivity.
-        int value1 = getIntent().getIntExtra("MOVIES_ID",0);
+        listID = getIntent().getIntExtra("MOVIES_ID",0);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        moviesList = listInteractor.getMoviesOnList(value1);
+        moviesList = listInteractor.getMoviesOnList(listID);
 
-        /*
-        Movie fakeMovie = new Movie();
-        fakeMovie.setId("Chris' Blunder");
-        fakeMovie.setOverview("This is a small yet simple movie about a guy named Chris who deletes all of our work we did for 3.5 hours");
-        fakeMovie.setReleaseDate("Litterally 40 minutes ago");
-        fakeMovie.setTitle("Chris' Blunder");
-        fakeMovie.setTvMovie(0);
-        fakeMovie.setVoteAverage(10);
-        fakeMovie.setBackdropPath("https://www.google.ca/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiL8uPa6ejSAhUk3IMKHRECAcgQjRwIBw&url=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fchris-vincent-822405a0&psig=AFQjCNGXvvy-osbh36iehmJM2qrC5sEjoA&ust=1490227877364380");
-        fakeMovie.setPosterPath("https://www.google.ca/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiL8uPa6ejSAhUk3IMKHRECAcgQjRwIBw&url=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fchris-vincent-822405a0&psig=AFQjCNGXvvy-osbh36iehmJM2qrC5sEjoA&ust=1490227877364380");
-
-        moviesList.add(fakeMovie);
-        System.out.println("The size of the movie list is: " + moviesList.size());
-        */
         frag.changeMovieList(moviesList);
 
         mDrawerList = (ExpandableListView)findViewById(R.id.navList);
@@ -136,21 +124,23 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
         List<Integer> groupKeysList = new ArrayList<>(groups.keySet());
         Collections.sort(groupKeysList);
 
-        // Go through each group and add it
-        for (Integer currentGroupId : groupKeysList) {
-            categoryStrings.add( groups.get(currentGroupId) );
-            categoryIds.add( currentGroupId );
+        categoryStrings.add(0, "");
 
-            String currentGroupName = groups.get(currentGroupId);
+        // Go through each group and add it
+        for (int i = 0; i < groupKeysList.size(); i++) {
+            categoryStrings.add( groups.get(groupKeysList.get(i)) );
+            categoryIds.add(groupKeysList.get(i));
+
+            String currentGroupName = groups.get(groupKeysList.get(i));
             List<String> listArray = new ArrayList<>();
 
             // go through each list and add it
-            Map<Integer, String> lists = listInteractor.getLists( currentGroupId );
+            Map<Integer, String> lists = listInteractor.getLists(groupKeysList.get(i));
             List<Integer> listKeysList = new ArrayList<>(lists.keySet());
             Collections.sort(listKeysList);
 
-            for (Integer currentListId : listKeysList) {
-                listArray.add( lists.get(currentListId) );
+            for (int j = 0; j < listKeysList.size(); j++) {
+                listArray.add(lists.get(listKeysList.get(j)));
             }
 
             categoryItems.put(currentGroupName, listArray);
@@ -182,7 +172,7 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
 
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Expanded", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Expanded", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -191,7 +181,7 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
 
             @Override
             public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Collapsed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), categoryStrings.get(groupPosition) + " Collapsed", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -205,12 +195,12 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
 
                 // Get Info
                 ListInteractor listInteractor = ListInteractorImpl.getInstance();
-                Integer groupId = categoryIds.get(groupPosition);
+                Integer groupId = categoryIds.get(groupPosition - 1);
                 Map<Integer, String> lists = listInteractor.getLists(groupId);
                 String listName = categoryItems.get(categoryStrings.get(groupPosition)).get(childPosition);
 
                 // Fetch list ID
-                Integer listId = 0;
+                Integer listId = -1;
                 for (Map.Entry<Integer, String> list : lists.entrySet()) {
                     if (list.getValue().equals( listName )) {
                         listId = list.getKey();
@@ -226,8 +216,6 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
                 Intent intent = new Intent(context, MoviesListingGroupActivity.class);
                 intent.putExtra("MOVIES_ID", listId);
                 startActivity(intent);
-
-                // TODO: Navigate to list with ID listId
 
                 return true;
             }
@@ -332,16 +320,19 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
 
     private void startMovieActivity(Movie movie)
     {
-        Intent intent = new Intent(this, MovieDetailsActivity.class);
+        Intent intent = new Intent(this, MovieDetailsGroupActivity.class);
         Bundle extras = new Bundle();
         extras.putParcelable(Constants.MOVIE, movie);
         intent.putExtras(extras);
+        intent.putExtra("MOVIES_ID", getIntent().getIntExtra("MOVIES_ID",0));
+
         startActivity(intent);
     }
 
     private void loadMovieFragment(Movie movie)
     {
-        MovieDetailsFragment movieDetailsFragment = MovieDetailsFragment.getInstance(movie);
+        int listId = getIntent().getIntExtra("MOVIES_ID",0);
+        MovieDetailsFragment movieDetailsFragment = MovieDetailsFragment.getInstance(movie, listId);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.movie_details_container, movieDetailsFragment, DETAILS_FRAGMENT)
                 .commit();
@@ -359,6 +350,11 @@ public class MoviesListingGroupActivity extends AppCompatActivity implements Mov
         super.onResume();
         addDrawerItems();
         setupDrawer();
+
+        MoviesListingGroupFragment frag = (MoviesListingGroupFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_listing);
+        moviesList = ListInteractorImpl.getInstance().getMoviesOnList(listID);
+        frag.changeMovieList(moviesList);
+
         listAdapter.notifyDataSetChanged();
     }
 }

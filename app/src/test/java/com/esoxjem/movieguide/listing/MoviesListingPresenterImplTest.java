@@ -58,7 +58,7 @@ public class MoviesListingPresenterImplTest
         responseObservable.subscribe(testSubscriber);
         when(interactor.fetchMovies()).thenReturn(responseObservable);
 
-        presenter.setView(view);
+        presenter.setView(view,true);
         testScheduler.triggerActions();
 
         testSubscriber.assertNoErrors();

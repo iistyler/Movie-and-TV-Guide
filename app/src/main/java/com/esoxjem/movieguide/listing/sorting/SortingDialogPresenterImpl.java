@@ -8,8 +8,7 @@ class SortingDialogPresenterImpl implements SortingDialogPresenter
     private SortingDialogView view;
     private SortingDialogInteractor sortingDialogInteractor;
 
-    SortingDialogPresenterImpl(SortingDialogInteractor interactor)
-    {
+    SortingDialogPresenterImpl(SortingDialogInteractor interactor) {
         sortingDialogInteractor = interactor;
     }
 
@@ -26,10 +25,8 @@ class SortingDialogPresenterImpl implements SortingDialogPresenter
     }
 
     @Override
-    public void setLastSavedOption()
-    {
-        if (isViewAttached())
-        {
+    public void setLastSavedOption() {
+        if (isViewAttached()) {
             int selectedOption = sortingDialogInteractor.getSelectedSortingOption();
 
             if (selectedOption == SortType.MOST_POPULAR_MOVIE.getValue()) {
@@ -39,9 +36,9 @@ class SortingDialogPresenterImpl implements SortingDialogPresenter
             } else if (selectedOption == SortType.MOST_POPULAR_TV.getValue()) {
                 view.setPopularTvChecked();
             } else if (selectedOption == SortType.SEARCH_MOVIES.getValue()) {
-                view.setSearchMoviesChecked();
+                //view.setSearchMoviesChecked();
             } else if (selectedOption == SortType.SEARCH_TV.getValue()) {
-                view.setSearchTvChecked();
+                //view.setSearchTvChecked();
             } else {
                 view.setHighestRatedTvChecked();
             }
@@ -54,60 +51,48 @@ class SortingDialogPresenterImpl implements SortingDialogPresenter
     }
 
     @Override
-    public void onPopularMoviesSelected()
-    {
-        if (isViewAttached())
-        {
+    public void onPopularMoviesSelected() {
+        if (isViewAttached()) {
             sortingDialogInteractor.setSortingOption(SortType.MOST_POPULAR_MOVIE);
             view.dismissDialog();
         }
     }
 
     @Override
-    public void onHighestRatedMoviesSelected()
-    {
-        if (isViewAttached())
-        {
+    public void onHighestRatedMoviesSelected() {
+        if (isViewAttached()) {
             sortingDialogInteractor.setSortingOption(SortType.HIGHEST_RATED_MOVIE);
             view.dismissDialog();
         }
     }
 
     @Override
-    public void onSearchMoviesSelected()
-    {
-        if (isViewAttached())
-        {
+    public void onSearchMoviesSelected() {
+        if (isViewAttached()) {
             sortingDialogInteractor.setSortingOption(SortType.SEARCH_MOVIES);
             view.dismissDialog();
         }
     }
 
     @Override
-    public void onSearchTvSelected()
-    {
-        if (isViewAttached())
-        {
+    public void onSearchTvSelected() {
+        if (isViewAttached()) {
             sortingDialogInteractor.setSortingOption(SortType.SEARCH_TV);
             view.dismissDialog();
         }
     }
 
     @Override
-    public void onPopularTvSelected()
-    {
-        if (isViewAttached())
-        {
+    public void onPopularTvSelected() {
+        if (isViewAttached()) {
             sortingDialogInteractor.setSortingOption(SortType.MOST_POPULAR_TV);
             view.dismissDialog();
         }
     }
 
     @Override
-    public void onHighestRatedTvSelected()
-    {
-        if (isViewAttached())
-        {
+    public void onHighestRatedTvSelected() {
+        if (isViewAttached()) {
             sortingDialogInteractor.setSortingOption(SortType.HIGHEST_RATED_TV);
             view.dismissDialog();
         }

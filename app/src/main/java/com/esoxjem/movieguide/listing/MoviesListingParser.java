@@ -39,11 +39,9 @@ public class MoviesListingParser
         if (!response.isNull(RESULTS)) {
             JSONArray results = response.getJSONArray(RESULTS);
 
-            for (int i = 0; i < results.length(); i++)
-            {
+            for (int i = 0; i < results.length(); i++) {
                 movies.add(getMovie(results.getJSONObject(i)));
             }
-
         } else {
             Log.e("parse()", "Parsing JSON resulted in a NULL value. Offending JSON: " + json);
         }
@@ -52,8 +50,7 @@ public class MoviesListingParser
     }
 
     @NonNull
-    public static Movie getMovie(JSONObject result) throws JSONException
-    {
+    public static Movie getMovie(JSONObject result) throws JSONException {
         Movie movie = new Movie();
 
         if (!result.isNull(ID)) {

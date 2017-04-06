@@ -39,6 +39,9 @@ ext {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    // RxMarkdown
+    compile 'com.yydcdut:rxmarkdown:0.1.0'
+
     //Support
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"

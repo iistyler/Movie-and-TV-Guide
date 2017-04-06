@@ -28,8 +28,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MoviesListingGroupFragment extends Fragment implements MoviesListingView
-{
+public class MoviesListingGroupFragment extends Fragment implements MoviesListingView {
     @Inject
     MoviesListingPresenter moviesPresenter;
 
@@ -41,21 +40,18 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     private List<Movie> newMovies = new ArrayList<>();
     private Callback callback;
 
-    public MoviesListingGroupFragment()
-    {
+    public MoviesListingGroupFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onAttach(Context context)
-    {
+    public void onAttach(Context context) {
         super.onAttach(context);
         callback = (Callback) context;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
@@ -64,8 +60,7 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_grouping, container, false);
         ButterKnife.bind(this, rootView);
         initLayoutReferences();
@@ -73,42 +68,41 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         moviesPresenter.setView(this, true);
-        //showMovies(newMovies);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        /*
-        switch (item.getItemId())
-        {
-            case R.id.action_sort:
-                displaySortingOptions();
-        }
-        */
+    public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    /*
-    private void displaySortingOptions()
-    {
-        DialogFragment sortingDialogFragment = SortingDialogFragment.newInstance(moviesPresenter);
-        sortingDialogFragment.show(getFragmentManager(), "Select Quantity");
+
+    public void setMode(int mode) {
+        // do nothing.
     }
-    */
-    private void initLayoutReferences()
-    {
+
+    @Override
+    public void toggleLoad() {
+        // do nothing.
+    }
+
+    public int getMode() {
+        // do nothing.
+        return 0;
+    }
+
+    public void setLastQuery(String newQuery) {
+        // do nothing.
+    }
+
+    private void initLayoutReferences() {
         moviesListing.setHasFixedSize(true);
 
         int columns;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
-            columns = 2;
-        } else
-        {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            columns = 4;
+        } else {
             columns = getResources().getInteger(R.integer.no_of_columns);
         }
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), columns);
@@ -119,8 +113,7 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     }
 
     @Override
-    public void showMovies(List<Movie> movies)
-    {
+    public void showMovies(List<Movie> movies) {
         this.movies.clear();
         this.movies.addAll(movies);
         moviesListing.setVisibility(View.VISIBLE);
@@ -132,14 +125,23 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     }
 
     @Override
-    public void loadingStarted()
-    {
+    public void moreMovies(List<Movie> movies) {
+        this.movies.addAll(movies);
+        moviesListing.setVisibility(View.VISIBLE);
+        adapter.notifyDataSetChanged();
+
+        if(movies.size()>0){
+            callback.onMoviesLoaded(movies.get(0));
+        }
+    }
+
+    @Override
+    public void loadingStarted() {
         Snackbar.make(moviesListing, R.string.loading_movies, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
-    public void loadingFailed(String errorMessage)
-    {
+    public void loadingFailed(String errorMessage) {
         if ((errorMessage.contains("Invalid index 0, size is 0")) || (errorMessage.contains("Index: 0, Size: 0"))) {
             Snackbar.make(moviesListing, "No results found", Snackbar.LENGTH_INDEFINITE).show();
         } else if (errorMessage.contains("Unable to resolve host")) {
@@ -150,11 +152,9 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     }
 
     @Override
-    public void onMovieClicked(Movie movie)
-    {
+    public void onMovieClicked(Movie movie) {
         callback.onMovieClicked(movie);
     }
-
 
     public void changeMovieList(List<Movie> movies) {
         System.out.println("The movie size in function is: " + movies.size());
@@ -162,31 +162,26 @@ public class MoviesListingGroupFragment extends Fragment implements MoviesListin
     }
 
     @Override
-    public void onDestroyView()
-    {
+    public void onDestroyView() {
         super.onDestroyView();
         moviesPresenter.destroy();
         ButterKnife.unbind(this);
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         callback = null;
         super.onDetach();
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         ((BaseApplication) getActivity().getApplication()).releaseListingComponent();
     }
 
-    public interface Callback
-    {
+    public interface Callback {
         void onMoviesLoaded(Movie movie);
-
         void onMovieClicked(Movie movie);
     }
 }

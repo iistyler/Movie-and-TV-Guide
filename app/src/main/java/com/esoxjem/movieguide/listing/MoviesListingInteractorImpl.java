@@ -26,15 +26,12 @@ import rx.functions.Func0;
 /**
  * @author arun
  */
-class MoviesListingInteractorImpl implements MoviesListingInteractor
-{
+class MoviesListingInteractorImpl implements MoviesListingInteractor {
     private ListInteractor listInteractor;
     private RequestHandler requestHandler;
     private SortingOptionStore sortingOptionStore;
 
-    MoviesListingInteractorImpl(ListInteractor listInteractor,
-                                RequestHandler requestHandler, SortingOptionStore store)
-    {
+    MoviesListingInteractorImpl(ListInteractor listInteractor, RequestHandler requestHandler, SortingOptionStore store) {
         this.listInteractor = listInteractor;
         this.requestHandler = requestHandler;
         sortingOptionStore = store;
@@ -69,91 +66,110 @@ class MoviesListingInteractorImpl implements MoviesListingInteractor
 
             @NonNull
             private List<Movie> fetch(String url) throws IOException, JSONException {
-
                 Request request = RequestGenerator.get(url);
                 String response = requestHandler.request(request);
+
                 return MoviesListingParser.parse(response);
             }
-
         });
     }
 
-
-
-    public Observable<List<Movie>> searchMovies(String query)
-    {
-
+    public Observable<List<Movie>> searchMovies(String query) {
         final String temp = Api.GET_SEARCH_MOVIES + query;
 
-        return Observable.defer(new Func0<Observable<List<Movie>>>()
-        {
+        return Observable.defer(new Func0<Observable<List<Movie>>>() {
 
-            public Observable<List<Movie>> call()
-            {
-                try
-                {
+            public Observable<List<Movie>> call() {
+                try {
                     return Observable.just(get());
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     return Observable.error(e);
                 }
             }
 
-            private List<Movie> get() throws IOException, JSONException
-            {
-
+            private List<Movie> get() throws IOException, JSONException {
                 return fetch(temp);
-
             }
 
             @NonNull
             private List<Movie> fetch(String url) throws IOException, JSONException {
-
                 Request request = RequestGenerator.get(url);
                 String response = requestHandler.request(request);
                 return MoviesListingParser.parse(response);
             }
-
         });
     }
 
-
-    public Observable<List<Movie>> searchTv(String query)
-    {
-
+    public Observable<List<Movie>> searchTv(String query) {
         final String temp = Api.GET_SEARCH_TV + query;
 
-        return Observable.defer(new Func0<Observable<List<Movie>>>()
-        {
-
-            public Observable<List<Movie>> call()
-            {
-                try
-                {
+        return Observable.defer(new Func0<Observable<List<Movie>>>() {
+            public Observable<List<Movie>> call() {
+                try {
                     return Observable.just(get());
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     return Observable.error(e);
                 }
             }
 
-            private List<Movie> get() throws IOException, JSONException
-            {
-
+            private List<Movie> get() throws IOException, JSONException {
                 return fetch(temp);
-
             }
 
             @NonNull
             private List<Movie> fetch(String url) throws IOException, JSONException {
-
                 Request request = RequestGenerator.get(url);
                 String response = requestHandler.request(request);
+
                 return MoviesListingParser.parse(response);
             }
-
         });
     }
 
+    public Observable<List<Movie>> appendList(int mode, int page, String query) {
+        String temp2 = "";
+        switch(mode) {
+            case 0:
+                temp2 = Api.GET_POPULAR_MOVIES + "&page=" + page;
+                break;
+            case 1:
+                temp2 = Api.GET_HIGHEST_RATED_MOVIES + "&page=" + page;
+                break;
+            case 2:
+                temp2 = Api.GET_POPULAR_TV + "&page=" + page;
+                break;
+            case 3:
+                temp2 = Api.GET_HIGHEST_RATED_TV + "&page=" + page;
+                break;
+            case 4:
+                temp2 = Api.GET_SEARCH_MOVIES + query + "&page=" + page;
+                break;
+            case 5:
+                temp2 = Api.GET_SEARCH_TV + query + "&page=" + page;
+                break;
+        }
+        final String temp = temp2;
 
+        return Observable.defer(new Func0<Observable<List<Movie>>>() {
+            public Observable<List<Movie>> call() {
+                try {
+                    return Observable.just(get());
+                } catch (Exception e) {
+                    return Observable.error(e);
+                }
+            }
+
+            private List<Movie> get() throws IOException, JSONException {
+                return fetch(temp);
+            }
+
+            @NonNull
+            private List<Movie> fetch(String url) throws IOException, JSONException {
+                Request request = RequestGenerator.get(url);
+                String response = requestHandler.request(request);
+
+                return MoviesListingParser.parse(response);
+            }
+        });
+    }
 }

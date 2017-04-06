@@ -1,5 +1,10 @@
 package com.esoxjem.movieguide.details;
 
+/**
+ * Created by tylermclean on 2017-04-05.
+ */
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +14,7 @@ import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.Constants;
 import com.esoxjem.movieguide.Movie;
 
-public class MovieDetailsActivity extends AppCompatActivity
+public class MovieDetailsGroupActivity extends AppCompatActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,7 +44,8 @@ public class MovieDetailsActivity extends AppCompatActivity
         switch (item.getItemId())
         {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                super.onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
